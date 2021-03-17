@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
 
 {% block content %}
+
+<!-- Button trigger modal -->
+
 <div class="clearfix">
 	<a class="btn btn-info right mr-2" href="{% url 'calendar' %}?{{ next_month }} "> Next Month >> </a>
     <a class="btn btn-info right mr-2" href="{% url 'calendar' %}?{{ prev_month }}"> << Previous Month </a>
