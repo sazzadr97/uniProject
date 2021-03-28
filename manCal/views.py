@@ -18,6 +18,8 @@ from django.urls import reverse_lazy
 from .models import *
 from .utils import Calendar
 
+from django.contrib.auth.forms import UserCreationForm
+
 def loginView(request):
     # Get username and password from request
     username = request.POST['username']
@@ -62,11 +64,15 @@ def logoutView(request):
 def signUpView(request):
     if request.method == "POST":
         form = signUpForm(request.POST)
+
         if form.is_valid():
             form.save()
         return redirect("/login")
     else:
+        print('register failed after validation')
         form = signUpForm()
+    
+    print('register failed')
     return render(request, "signup.html", {"form": form})
 
 @login_required

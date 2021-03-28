@@ -5,10 +5,8 @@ from django.conf import settings
 
 # Create your models here.
 class CustomUser(AbstractUser):
-    first_name = models.CharField(max_length=50)
-    last_name = models.CharField(max_length=50)
     email = models.EmailField()
-    dob = models.DateField('Date of Birth', blank=True, null=True)
+
 
 class Event(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
