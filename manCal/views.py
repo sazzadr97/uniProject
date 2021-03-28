@@ -99,7 +99,6 @@ def next_month(d):
     return month
 
 class CalendarView(LoginRequiredMixin, generic.ListView):
-    login_url = 'signup'
     model = Event
     template_name = 'calendar.html'
 
@@ -122,12 +121,14 @@ def create_event(request):
         description = form.cleaned_data['description']
         start_time = form.cleaned_data['start_time']
         end_time = form.cleaned_data['end_time']
+        location = form.cleaned_data['location']
         Event.objects.get_or_create(
             user=request.user,
             title=title,
             description=description,
             start_time=start_time,
-            end_time=end_time
+            end_time=end_time,
+            location= location
         )
         return HttpResponseRedirect(reverse('manCal:calendar'))
     return render(request, 'event.html', {'form': form})
