@@ -3,12 +3,20 @@
 {% block content %}
 
 <!-- Button trigger modal -->
+    <div class="conteiner">
+        <div class="notes-conteiner float-right col-lg-4">
+            <h1> Notes </h1>
+        </div>
+        <div class="calendar-content col-sm-12 col-lg-8">
+            <div class="clearfix">
+                <a class="btn btn-info right mr-2" href="{% url 'manCal:calendar' %}?{{ next_month }} "> Next Month >> </a>
+                <a class="btn btn-info center mr-2" href="{% url 'manCal:event_new' %}"> Add events </a>
+                <a class="btn btn-info left mr-2" href="{% url 'manCal:calendar' %}?{{ prev_month }}"> << Previous Month </a>
+            </div>
+            <div style="color: blueviolet;">
+                {{ calendar }}
+            </div>
+        </div>
+    </div>
 
-<div class="clearfix">
-	<a class="btn btn-info right mr-2" href="{% url 'calendar' %}?{{ next_month }} "> Next Month >> </a>
-    <a class="btn btn-info right mr-2" href="{% url 'calendar' %}?{{ prev_month }}"> << Previous Month </a>
-</div>
-<div style="color: blueviolet;">
-    {{ calendar }}
-</div>
 {% endblock %}
