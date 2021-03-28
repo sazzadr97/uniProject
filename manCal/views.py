@@ -106,3 +106,7 @@ class CalendarView(LoginRequiredMixin, generic.ListView):
         context['prev_month'] = prev_month(d)
         context['next_month'] = next_month(d)
         return context
+
+@login_required
+def showWeather():
+    return HttpResponse("Hellow")
