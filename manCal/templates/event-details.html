@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Event Details
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="clearfix">
+            <a class="btn btn-primary left" href="{% url 'manCal:calendar' %}"> Calendar </a>
+            <a class="btn btn-info right mr-2" href="{% url 'manCal:event_edit' event.pk %}"> Edit Event </a>
+        </div>
+        
+        <div class="clearfix">
+            <h3>Event Name: {{ event.title }}</h3>
+            <p>From <span style="color: gray;">{{ event.start_time }}</span> To <span style="color: gray;">{{ event.end_time }}</span></p>
+            <hr>
+            <p>{{ event.description }}</p>
+            <p>Location:</p> 
+            <p id="address">{{event.location}}</p>
+            <input type="hidden" name="lat" value="{{lat}}">
+            <input type="hidden" name="lon" value="{{lon}}">
+        </div>
+        <hr>
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="map-tab" data-toggle="tab" href="#map" role="tab" aria-controls="map" aria-selected="true">Map</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="files-tab" data-toggle="tab" href="#files" role="tab" aria-controls="files" aria-selected="false">Files</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="members-tab" data-toggle="tab" href="#members" role="tab" aria-controls="members" aria-selected="false">Members</a>
+            </li>
+        </ul>
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="map" role="tabpanel" aria-labelledby="map-tab">
+                <div id="map">
+
+                </div>
+            </div>
+            <div class="tab-pane fade" id="files" role="tabpanel" aria-labelledby="files-tab">...</div>
+            <div class="tab-pane fade" id="members" role="tabpanel" aria-labelledby="members-tab">
+                <div class="clearfix">
+                    <h4 class="left" > Members of this Event</h4>
+                    <a class="btn btn-success right" href="{% url 'manCal:add_eventmember' event.id %}"> Add Member </a>
+                </div>
+                
+                <table class="table table-bordered">
+                    <thead>                  
+                        <tr>
+                        <th style="width: 10px">#</th>
+                        <th>Name</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for member in eventmember %}
+                        <tr role="row">
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ member.user.first_name }} {{ member.user.last_name }}</td>
+                            <td>{{ member.user.username }}</td>
+                            <td>{{ member.user.email }}</td>
+                            <td>
+                                <a class="btn btn-danger" href="{% url 'manCal:remove_event' member.id %}">Remove</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+    </div>
+{% endblock %}
+
+{% block javascript%}
+    <script>
+            let map;
+            let marker;
+            function initMap() {
+                map = new google.maps.Map(document.getElementById("map"), {
+                    center: { lat: {{lat}}, lng: {{lon}}  },
+                    zoom: 18,
+                });
+                marker = new google.maps.Marker({
+                    position: { lat: {{lat}}, lng: {{lon}}  },
+                    map: map
+                })
+            }
+    </script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDio4Zj99JOhP8SBQBM3CydIsc91ld-Jbs&callback=initMap"></script>
+
+{% endblock %}

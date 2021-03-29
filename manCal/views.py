@@ -2,8 +2,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse, Http404
 from django.contrib.auth.decorators import login_required
-from .forms import signUpForm
-
+from .forms import signUpForm, EventForm, AddMemberForm
+import requests
 from datetime import datetime, date
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
@@ -17,6 +17,8 @@ from django.urls import reverse_lazy
 
 from .models import *
 from .utils import Calendar
+
+from django.contrib.auth.forms import UserCreationForm
 
 def loginView(request):
     # Get username and password from request
@@ -62,11 +64,15 @@ def logoutView(request):
 def signUpView(request):
     if request.method == "POST":
         form = signUpForm(request.POST)
+
         if form.is_valid():
             form.save()
         return redirect("/login")
     else:
+        print('register failed after validation')
         form = signUpForm()
+    
+    print('register failed')
     return render(request, "signup.html", {"form": form})
 
 @login_required
@@ -93,7 +99,6 @@ def next_month(d):
     return month
 
 class CalendarView(LoginRequiredMixin, generic.ListView):
-    login_url = 'signup'
     model = Event
     template_name = 'calendar.html'
 
@@ -106,3 +111,89 @@ class CalendarView(LoginRequiredMixin, generic.ListView):
         context['prev_month'] = prev_month(d)
         context['next_month'] = next_month(d)
         return context
+
+
+@login_required
+def create_event(request):    
+    form = EventForm(request.POST or None)
+    if request.POST and form.is_valid():
+        title = form.cleaned_data['title']
+        description = form.cleaned_data['description']
+        start_time = form.cleaned_data['start_time']
+        end_time = form.cleaned_data['end_time']
+        location = form.cleaned_data['location']
+        Event.objects.get_or_create(
+            user=request.user,
+            title=title,
+            description=description,
+            start_time=start_time,
+            end_time=end_time,
+            location= location
+        )
+        return HttpResponseRedirect(reverse('manCal:calendar'))
+    return render(request, 'event.html', {'form': form})
+
+class EventEdit(LoginRequiredMixin, generic.UpdateView):
+    model = Event
+    fields = ['title', 'description', 'start_time', 'end_time', 'location']
+    template_name = 'event.html'
+
+@login_required(login_url='signup')
+def event_details(request, event_id):
+    event = Event.objects.get(id=event_id)
+    eventmember = EventMember.objects.filter(event=event)
+    API_KEY = 'AIzaSyDio4Zj99JOhP8SBQBM3CydIsc91ld-Jbs'
+    address = event.location
+    params = {
+        'key' : API_KEY,
+        'address': address
+    }
+    lat = 51.509865
+    lon = -0.118092
+    base_url = 'https://maps.googleapis.com/maps/api/geocode/json?'
+    response = requests.get(base_url, params=params).json()
+    
+    if response['status'] == 'OK':
+        geometry = response['results'][0]['geometry']
+        
+        lat = geometry['location']['lat']
+        print(lat)
+        lon = geometry['location']['lng']
+        print(lon)
+
+    context = {
+        'event': event,
+        'eventmember': eventmember,
+        'lat' : lat,
+        'lon' : lon,
+
+    }
+    return render(request, 'event-details.html', context)
+
+
+
+def add_eventmember(request, event_id):
+    forms = AddMemberForm()
+    if request.method == 'POST':
+        forms = AddMemberForm(request.POST)
+        if forms.is_valid():
+            member = EventMember.objects.filter(event=event_id)
+            event = Event.objects.get(id=event_id)
+            if member.count() <= 9:
+                user = forms.cleaned_data['user']
+                EventMember.objects.create(
+                    event=event,
+                    user=user
+                )
+                return redirect('manCal:calendar')
+            else:
+                print('--------------User limit exceed!-----------------')
+    context = {
+        'form': forms
+    }
+    return render(request, 'add_member.html', context)
+
+class EventMemberDeleteView(generic.DeleteView):
+    model = EventMember
+    template_name = 'event_delete.html'
+    success_url = reverse_lazy('manCal:calendar')
