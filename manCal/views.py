@@ -133,9 +133,9 @@ def create_event(request):
         return HttpResponseRedirect(reverse('manCal:calendar'))
     return render(request, 'event.html', {'form': form})
 
-class EventEdit(generic.UpdateView):
+class EventEdit(LoginRequiredMixin, generic.UpdateView):
     model = Event
-    fields = ['title', 'description', 'start_time', 'end_time']
+    fields = ['title', 'description', 'start_time', 'end_time', 'location']
     template_name = 'event.html'
 
 @login_required(login_url='signup')
