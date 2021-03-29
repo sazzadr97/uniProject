@@ -69,7 +69,11 @@
   background-color: black;
 }
 
-  ul, li{
-    list-style-type: none;
-  }
-  
+ul, li{
+  list-style-type: none;
+}
+
+#map {
+  height: 500px;
+  width: 100%;
+}
