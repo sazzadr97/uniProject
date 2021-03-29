@@ -138,13 +138,16 @@ class EventEdit(generic.UpdateView):
     fields = ['title', 'description', 'start_time', 'end_time']
     template_name = 'event.html'
 
-@login_required
+@login_required(login_url='signup')
 def event_details(request, event_id):
     event = Event.objects.get(id=event_id)
+    eventmember = EventMember.objects.filter(event=event)
     context = {
         'event': event,
+        'eventmember': eventmember
     }
     return render(request, 'event-details.html', context)
+
 
 
 def add_eventmember(request, event_id):

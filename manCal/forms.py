@@ -17,6 +17,7 @@ class EventForm(ModelForm):
     widgets = {
       'start_time': DateInput(attrs={'type': 'datetime-local'}, format='%Y-%m-%dT%H:%M'),
       'end_time': DateInput(attrs={'type': 'datetime-local'}, format='%Y-%m-%dT%H:%M'),
+      'location': forms.TextInput(attrs={'id':"autocomplete"})
     }
     exclude = ['user']
 
