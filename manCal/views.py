@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse, Http404
 from django.contrib.auth.decorators import login_required
 from .forms import signUpForm, EventForm, AddMemberForm
-
+import requests
 from datetime import datetime, date
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
@@ -142,9 +142,31 @@ class EventEdit(generic.UpdateView):
 def event_details(request, event_id):
     event = Event.objects.get(id=event_id)
     eventmember = EventMember.objects.filter(event=event)
+    API_KEY = 'AIzaSyDio4Zj99JOhP8SBQBM3CydIsc91ld-Jbs'
+    address = event.location
+    params = {
+        'key' : API_KEY,
+        'address': address
+    }
+    lat = 51.509865
+    lon = -0.118092
+    base_url = 'https://maps.googleapis.com/maps/api/geocode/json?'
+    response = requests.get(base_url, params=params).json()
+    
+    if response['status'] == 'OK':
+        geometry = response['results'][0]['geometry']
+        
+        lat = geometry['location']['lat']
+        print(lat)
+        lon = geometry['location']['lng']
+        print(lon)
+
     context = {
         'event': event,
-        'eventmember': eventmember
+        'eventmember': eventmember,
+        'lat' : lat,
+        'lon' : lon,
+
     }
     return render(request, 'event-details.html', context)
 
