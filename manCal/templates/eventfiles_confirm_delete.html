@@ -1,0 +1,16 @@
+<!-- templates/article_delete.html -->
+{% extends 'base.html' %}
+
+{% block title %}
+File Delete
+{% endblock %}
+
+{% block content %}
+    <div class="conteiner p-5">
+        <h1>Delete</h1>
+        <form action="" method="post">{% csrf_token %}
+            <p>Are you sure you want to delete this file?</p>
+            <button class="btn btn-danger " type="submit">Confirm</button>
+        </form>
+    </div>
+{% endblock content %}

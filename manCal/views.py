@@ -14,6 +14,7 @@ import calendar
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
+from django.core.files.storage import FileSystemStorage
 
 from .models import *
 from .utils import Calendar
@@ -142,6 +143,7 @@ class EventEdit(LoginRequiredMixin, generic.UpdateView):
 def event_details(request, event_id):
     event = Event.objects.get(id=event_id)
     eventmember = EventMember.objects.filter(event=event)
+    eventfiles = EventFiles.objects.filter(event=event)
     API_KEY = 'AIzaSyDio4Zj99JOhP8SBQBM3CydIsc91ld-Jbs'
     address = event.location
     params = {
@@ -156,6 +158,7 @@ def event_details(request, event_id):
     if response['status'] == 'OK':
         geometry = response['results'][0]['geometry']
         
+        #check if lat and lgn are obtained correctly
         lat = geometry['location']['lat']
         print(lat)
         lon = geometry['location']['lng']
@@ -164,6 +167,7 @@ def event_details(request, event_id):
     context = {
         'event': event,
         'eventmember': eventmember,
+        'eventfiles': eventfiles,
         'lat' : lat,
         'lon' : lon,
 
@@ -171,7 +175,7 @@ def event_details(request, event_id):
     return render(request, 'event-details.html', context)
 
 
-
+@login_required
 def add_eventmember(request, event_id):
     forms = AddMemberForm()
     if request.method == 'POST':
@@ -185,7 +189,7 @@ def add_eventmember(request, event_id):
                     event=event,
                     user=user
                 )
-                return redirect('manCal:calendar')
+                return redirect('manCal:event-detail', event_id = event.id,)
             else:
                 print('--------------User limit exceed!-----------------')
     context = {
@@ -193,7 +197,28 @@ def add_eventmember(request, event_id):
     }
     return render(request, 'add_member.html', context)
 
-class EventMemberDeleteView(generic.DeleteView):
+
+class EventMemberDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = EventMember
     template_name = 'event_delete.html'
     success_url = reverse_lazy('manCal:calendar')
+
+class EventFileDeleteView(LoginRequiredMixin, generic.DeleteView):
+    model = EventFiles
+    template_name = 'eventfiles_confirm_delete.html'
+    success_url = reverse_lazy('manCal:calendar')
+
+
+@login_required
+def add_files(request):
+    event_id = request.POST.get('event_id')
+    event = Event.objects.get(id=event_id)
+    files = request.FILES.getlist('files')
+    for file in files:
+        fs= FileSystemStorage()
+        file_path = fs.save(file.name, file)
+        sfile= EventFiles(event = event, files = file_path)
+        sfile.save()
+
+
+    return redirect('manCal:event-detail', event_id = event_id,)
