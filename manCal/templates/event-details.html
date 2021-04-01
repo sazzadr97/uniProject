@@ -22,6 +22,7 @@ Event Details
             <input type="hidden" name="lon" value="{{lon}}">
         </div>
         <hr>
+        {% comment %} tab navbar {% endcomment %}
         <ul class="nav nav-tabs" id="myTab" role="tablist">
             <li class="nav-item">
                 <a class="nav-link active" id="map-tab" data-toggle="tab" href="#map" role="tab" aria-controls="map" aria-selected="true">Map</a>
@@ -35,11 +36,74 @@ Event Details
         </ul>
         <div class="tab-content" id="myTabContent">
             <div class="tab-pane fade show active" id="map" role="tabpanel" aria-labelledby="map-tab">
+            {% comment %} placeholder for map {% endcomment %}
                 <div id="map">
-
+                    
                 </div>
             </div>
-            <div class="tab-pane fade" id="files" role="tabpanel" aria-labelledby="files-tab">...</div>
+            <div class="tab-pane fade" id="files" role="tabpanel" aria-labelledby="files-tab">
+                {% comment %} file section {% endcomment %}
+                <!-- add file button trigger -->
+                    <button type="button" class="btn btn-primary my-1 mr-1 right" data-toggle="modal" data-target="#exampleModal">
+                    Add documents...
+                    </button>
+                    <!-- Modal -->
+
+                    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                        <form method= 'post' action= {% url 'manCal:add_files' %} enctype= "multipart/form-data" >
+                            {% csrf_token %}
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Selects documents</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <input type="hidden" name="event_id" value="{{event.id}}">
+                                <input type="file" id="files" name="files" multiple><br><br>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Save changes</button>
+                            </div>
+                            </div>
+                        </form>
+                    </div>
+                    </div>
+
+                    <table class="table table-bordered">
+                    <thead>                  
+                        <tr>
+                        <th>Name</th>
+                        <th>URL</th>
+                        <th>View</th>
+                        <th>Download</th>
+                        <th>Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for file in eventfiles %}
+                        <tr role="row">
+                            <td>{{ file.files.name }}</td>
+                            <td>{{ file.files.url }}</td>
+                            <td>
+                                <a href="{{file.files.url}}" class = "btn btn-outline-primary"  target="_black">View File</a>
+                            </td>
+                            <td>
+                                <a href="{{file.files.url}}" download class = "btn btn-outline-primary">Download File</a>
+                            </td>
+                            <td>
+                                <a class="btn btn-danger" href="{% url 'manCal:remove_file' file.id file.event.id %}">Remove</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                    
+            </div>
             <div class="tab-pane fade" id="members" role="tabpanel" aria-labelledby="members-tab">
                 <div class="clearfix">
                     <h4 class="left" > Members of this Event</h4>

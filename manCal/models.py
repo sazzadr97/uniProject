@@ -39,3 +39,8 @@ class EventMember(models.Model):
 
     def __str__(self):
         return str(self.user)
+
+class EventFiles(models.Model):
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    files = models.FileField()
+    
