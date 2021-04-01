@@ -14,7 +14,7 @@ urlpatterns = [
     path('event/<int:event_id>/details/', views.event_details, name='event-detail'),
     path('add_eventmember/<int:event_id>', views.add_eventmember, name='add_eventmember'),
     path('event/<int:pk>/remove', views.EventMemberDeleteView.as_view(), name="remove_event"),
-    path('event/<int:pk>/<int:event_id>/fileremove', views.EventFileDeleteView.as_view(), name="remove_file"),
+    path('event/<int:file_id>/<int:event_id>/fileremove', views.file_delete, name="remove_file"),
     path('event/addfiles/', views.add_files, name='add_files'),
     
     

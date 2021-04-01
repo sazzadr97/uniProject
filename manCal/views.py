@@ -203,11 +203,12 @@ class EventMemberDeleteView(LoginRequiredMixin, generic.DeleteView):
     template_name = 'event_delete.html'
     success_url = reverse_lazy('manCal:calendar')
 
-class EventFileDeleteView(LoginRequiredMixin, generic.DeleteView):
-    model = EventFiles
-    template_name = 'eventfiles_confirm_delete.html'
-    success_url = reverse_lazy('manCal:calendar')
-
+def file_delete(request, file_id, event_id):
+    print (file_id)
+    print(event_id)
+    file = EventFiles.objects.get(id = file_id)
+    file.delete()
+    return redirect('manCal:event-detail', event_id = event_id,)
 
 @login_required
 def add_files(request):

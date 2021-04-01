@@ -95,7 +95,7 @@ Event Details
                                 <a href="{{file.files.url}}" download class = "btn btn-outline-primary">Download File</a>
                             </td>
                             <td>
-                                <a class="btn btn-danger" href="{% url 'manCal:remove_file' file.id  file.event.id%}">Remove</a>
+                                <a class="btn btn-danger" href="{% url 'manCal:remove_file' file.id file.event.id %}">Remove</a>
                             </td>
                         </tr>
                         {% endfor %}
