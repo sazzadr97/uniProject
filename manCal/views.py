@@ -108,9 +108,12 @@ class CalendarView(LoginRequiredMixin, generic.ListView):
         d = get_date(self.request.GET.get('month', None))
         cal = Calendar(d.year, d.month)
         html_cal = cal.formatmonth(withyear=True)
+        user = CustomUser.objects.get(username= self.request.user)
+        notes = Notes.objects.filter(user=user)
         context['calendar'] = mark_safe(html_cal)
         context['prev_month'] = prev_month(d)
         context['next_month'] = next_month(d)
+        context['notes'] = notes
         return context
 
 
@@ -204,11 +207,10 @@ class EventMemberDeleteView(LoginRequiredMixin, generic.DeleteView):
     success_url = reverse_lazy('manCal:calendar')
 
 def file_delete(request, file_id, event_id):
-    print (file_id)
-    print(event_id)
     file = EventFiles.objects.get(id = file_id)
     file.delete()
     return redirect('manCal:event-detail', event_id = event_id,)
+
 
 @login_required
 def add_files(request):
@@ -223,3 +225,27 @@ def add_files(request):
 
 
     return redirect('manCal:event-detail', event_id = event_id,)
+
+@login_required
+def add_note(request):
+    user = CustomUser.objects.get(username= request.user)
+    note = request.POST.get('note')
+    if request.method == 'POST':
+        Notes.objects.create(
+            user = user,
+            note = note
+        )
+        return redirect('manCal:calendar', )
+
+    return redirect('manCal:calendar', )
+
+@login_required
+def note_delete(request, note_id):
+    note= Notes.objects.get(id= note_id)
+    note.delete()
+    return redirect('manCal:calendar')
+
+@login_required
+def weatherView(request):
+
+    return render(request, 'weather.html',)

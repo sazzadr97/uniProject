@@ -77,7 +77,6 @@ Event Details
                     <thead>                  
                         <tr>
                         <th>Name</th>
-                        <th>URL</th>
                         <th>View</th>
                         <th>Download</th>
                         <th>Delete</th>
@@ -87,7 +86,6 @@ Event Details
                         {% for file in eventfiles %}
                         <tr role="row">
                             <td>{{ file.files.name }}</td>
-                            <td>{{ file.files.url }}</td>
                             <td>
                                 <a href="{{file.files.url}}" class = "btn btn-outline-primary"  target="_black">View File</a>
                             </td>

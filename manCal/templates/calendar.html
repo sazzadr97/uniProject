@@ -4,13 +4,30 @@
 
 <!-- Button trigger modal -->
     <div class="conteiner">
-        <div class="notes-conteiner float-right col-lg-4">
+        <div class="notes-conteiner float-right col-lg-4 col-sm-12 col-md-12">
             <h1> Notes </h1>
+            <form class="form-inline" method="POST" action= {% url 'manCal:add_note' %}>
+                {% csrf_token %}
+                    <input type="text" class="form-control mb-2 mr-sm-2 col-10 col-lg-8" id="note" placeholder="Write your note here" name = "note" required>
+
+                <button type="submit" class="btn btn-primary mb-2">Add...</button>
+            </form>
+            <ul class="list-group">
+            {% for note in notes %}
+            <div class= "inline">
+                <li class="list-group-item">
+
+                    <a class="btn btn-info center mr-2" href="{% url 'manCal:note_delete' note.id %}"> X </a>
+                    {{note.note}}
+                </li>    
+            </div>
+            {% endfor %}
+            </ul>
         </div>
-        <div class="calendar-content col-sm-12 col-lg-8">
+        <div class="calendar-content float-left col-sm-12 col-md-12 col-lg-8">
             <div class="clearfix">
                 <a class="btn btn-info right mr-2" href="{% url 'manCal:calendar' %}?{{ next_month }} "> Next Month >> </a>
-                <a class="btn btn-info center mr-2" href="{% url 'manCal:event_new' %}"> Add events </a>
+                <a class="btn btn-info text-center mr-2" href="{% url 'manCal:event_new' %}"> Add events </a>
                 <a class="btn btn-info left mr-2" href="{% url 'manCal:calendar' %}?{{ prev_month }}"> << Previous Month </a>
             </div>
             <div style="color: blueviolet;">
