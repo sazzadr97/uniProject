@@ -7,6 +7,8 @@ ul, li{
   width: 100%;
 }
 
+
+
 /*  weather css */
 
 * {
@@ -80,12 +82,22 @@ ul, li{
 
 .title p {
   margin-bottom: 0.2rem;
-  font-size: 1.2rem
+  font-size: 1.2rem;
+  overflow: hidden;
+  max-height: 30px;
+  max-width: 100%;
+  text-overflow: ellipsis;
+}
+
+
+.title p:hover {
+  overflow: visible;
 }
 
 .temp {
   font-size: 2.6rem;
-  margin-bottom: 1rem
+  margin-bottom: 1rem;
+  margin-top: 1rem;
 }
 
 .header {
@@ -107,6 +119,17 @@ ul, li{
   width: 5rem
 }
 
+.icon_del {
+  align-self: flex-start;
+  margin-left: -1.5rem;
+  margin-top: -4.5rem;
+  z-index: 999;
+}
+
+.icon_del img {
+  width: 2rem
+}
+
 /* button */
 
 .search_bar{
@@ -118,13 +141,10 @@ ul, li{
   border-radius: 55px;
   font-size: 12px;
   padding: 12px 40% 12px 20px;
+  margin-bottom: 5px;
   background: transparent;
-  width: 98%;
+  width: 100%;
   box-shadow: none !important
-}
-
-.mt-100 {
-  margin-top: 200px
 }
 
 a,
@@ -172,6 +192,7 @@ input[type=text] {
   -moz-border-radius: 70px;
   border-radius: 70px
 }
+
 
 .bg-orange {
   background: black

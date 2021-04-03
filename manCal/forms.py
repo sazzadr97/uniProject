@@ -1,5 +1,5 @@
 from django import forms
-from .models import CustomUser, Event, EventMember
+from .models import CustomUser, Event, EventMember, Locations
 from django.contrib.auth.forms import UserCreationForm
 from django.forms import ModelForm, DateInput
 
@@ -31,3 +31,10 @@ class AddMemberForm(forms.ModelForm):
   class Meta:
     model = EventMember
     fields = ['user']
+
+class AddLocation(forms.ModelForm):
+  class Meta:
+    model = Locations
+    fields = ["location"]
+    widgets = {'location' : forms.TextInput(attrs={'class' : 'form-contro', 'id' : 'search_input', 'name' : 'location', 'placeholder' : 'Search...' })}
+
