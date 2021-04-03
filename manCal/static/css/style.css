@@ -1,3 +1,186 @@
+ul, li{
+  list-style-type: none;
+}
+
+#map {
+  height: 500px;
+  width: 100%;
+}
+
+/*  weather css */
+
+* {
+  box-sizing: border-box;  
+}
+
+.parent {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.child {
+  height: 50px;
+  background: red;
+  flex: 1;
+  min-width: 25%;
+  border: 5px solid white;
+}
+
+
+
+.container_weather {
+  height: 80vh;
+  width: 100%;
+  background-color: #ffffff;
+  border-color: #ffffff;
+  align-items: center;
+  border-radius: 1rem;
+  vertical-align: middle
+}
+
+@media(max-width:767px) {
+  .container_weather {
+      height: fit-content
+  }
+}
+
+.weather {
+  width: 100%
+}
+
+@media(max-width:767px) {
+  .weather {
+      width: 100%
+  }
+}
+
+.card {
+  padding: 1rem;
+  margin: 1.5rem 4vw;
+  border-radius: 1rem;
+  background-color: rgba(238, 237, 237, 0.22);
+  border-color: rgba(238, 237, 237, 0.22);
+  box-shadow: 5px 6px 6px 2px #e9ecef;
+  text-align: center
+}
+
+@media(max-width:768px) {
+  .card {
+      margin: 1.5rem
+  }
+}
+
+.title {
+  justify-content: center;
+  position: absolute;
+  left: 50%;
+  -webkit-transform: translateX(-50%);
+  transform: translateX(-50%)
+}
+
+.title p {
+  margin-bottom: 0.2rem;
+  font-size: 1.2rem
+}
+
+.temp {
+  font-size: 2.6rem;
+  margin-bottom: 1rem
+}
+
+.header {
+  color: #dddddd
+}
+
+.col-4 {
+  padding: 0 0.2rem
+}
+
+.icon {
+  align-self: flex-end;
+  margin-right: -2.5rem;
+  margin-top: -2rem;
+  z-index: 999
+}
+
+.icon img {
+  width: 5rem
+}
+
+/* button */
+
+.search_bar{
+  background-color: black;
+}
+
+.footer-subscribe input[type=text] {
+  border: 1px solid #000000;
+  border-radius: 55px;
+  font-size: 12px;
+  padding: 12px 40% 12px 20px;
+  background: transparent;
+  width: 98%;
+  box-shadow: none !important
+}
+
+.mt-100 {
+  margin-top: 200px
+}
+
+a,
+button[type="submit"],
+input[type=text] {
+  color: black;
+  text-decoration: none;
+  -webkit-transition: all 400ms ease-in-out;
+  -moz-transition: all 400ms ease-in-out;
+  -o-transition: all 400ms ease-in-out;
+  -ms-transition: all 400ms ease-in-out;
+  transition: all 400ms ease-in-out
+}
+
+.footer-subscribe .btn-theme {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  right: 0
+}
+
+.btn-theme:hover {
+  box-shadow: none
+}
+
+.btn-theme {
+  color: black !important;
+  padding: 0.5rem 1.9rem;
+  font-weight: 400;
+  font-size: 0.875rem;
+  display: inline-block;
+  display: inline-flex;
+  outline: none;
+  border: none;
+  cursor: pointer;
+  overflow: hidden;
+  z-index: 2;
+  align-items: center;
+  position: relative;
+  cursor: pointer;
+  -webkit-box-shadow: 0px 14px 47px 0px rgba(28, 28, 28, 0.24);
+  -moz-box-shadow: 0px 14px 47px 0px rgba(28, 28, 28, 0.24);
+  box-shadow: 0px 14px 47px 0px rgba(28, 28, 28, 0.24);
+  -webkit-border-radius: 70px;
+  -moz-border-radius: 70px;
+  border-radius: 70px
+}
+
+.bg-orange {
+  background: black
+}
+/*  endWeather css */
+
+
+
+
 /*  calendar css */
   .calendar{
     color: black;
@@ -83,11 +266,4 @@
 /* end calendar css */
 
 
-ul, li{
-  list-style-type: none;
-}
 
-#map {
-  height: 500px;
-  width: 100%;
-}

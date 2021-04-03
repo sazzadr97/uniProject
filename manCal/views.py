@@ -142,7 +142,7 @@ class EventEdit(LoginRequiredMixin, generic.UpdateView):
     fields = ['title', 'description', 'start_time', 'end_time', 'location']
     template_name = 'event.html'
 
-@login_required(login_url='signup')
+@login_required
 def event_details(request, event_id):
     event = Event.objects.get(id=event_id)
     eventmember = EventMember.objects.filter(event=event)
@@ -177,6 +177,40 @@ def event_details(request, event_id):
     }
     return render(request, 'event-details.html', context)
 
+@login_required
+def weatherView(request):
+    url = 'http://api.openweathermap.org/data/2.5/weather?q={}&units=metric&appid=dbd607d4b59f61a34125bf4f2a185f8d'
+    user = CustomUser.objects.get(username= request.user)
+    if request.method == 'POST':
+        location = request.POST.get('location')
+        Locations.objects.create(
+            user = user,
+            location = location,
+        )
+        print(user,location)
+        
+    cities = Locations.objects.filter(user=user)
+
+    weather_data = []
+
+    for city in cities:
+
+        r = requests.get(url.format(city.location)).json()
+
+        city_weather = {
+            'city' : city.location,
+            'cod': r['cod'],
+            'temperature' : r['main']['temp'],
+            'main' : r['weather'][0]['main'],
+            'icon' : r['weather'][0]['icon'],
+            'minTemp' : r['main']['temp_min'],
+            'maxTemp' : r['main']['temp_max']
+        }
+
+        weather_data.append(city_weather)
+    
+    context = {'weather_data' : weather_data}
+    return render(request, 'weather.html', context)
 
 @login_required
 def add_eventmember(request, event_id):
@@ -245,7 +279,4 @@ def note_delete(request, note_id):
     note.delete()
     return redirect('manCal:calendar')
 
-@login_required
-def weatherView(request):
 
-    return render(request, 'weather.html',)
