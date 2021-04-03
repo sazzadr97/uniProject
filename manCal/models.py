@@ -10,7 +10,7 @@ class CustomUser(AbstractUser):
 
 class Event(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    title = models.CharField(max_length=200, unique=True)
+    title = models.CharField(max_length=200)
     description = models.TextField()
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
@@ -44,3 +44,9 @@ class EventFiles(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
     files = models.FileField()
     
+class Notes(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    note = models.TextField()
+
+    def __str__(self):
+        return str(self.note)

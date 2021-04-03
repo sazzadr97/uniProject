@@ -16,6 +16,11 @@ urlpatterns = [
     path('event/<int:pk>/remove', views.EventMemberDeleteView.as_view(), name="remove_event"),
     path('event/<int:file_id>/<int:event_id>/fileremove', views.file_delete, name="remove_file"),
     path('event/addfiles/', views.add_files, name='add_files'),
+    path('note/new_note/', views.add_note, name='add_note'),
+    path('note/<int:note_id>/note_delete', views.note_delete, name="note_delete"),
+    path('weather/', views.weatherView, name='weather'),
+
+
     
     
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

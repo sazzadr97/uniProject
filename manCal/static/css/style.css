@@ -1,4 +1,7 @@
 /*  calendar css */
+  .calendar{
+    color: black;
+  }
   .calendar tr, .calendar td {
     border: 1px solid black;
   }
@@ -25,7 +28,7 @@
   
   ul {
     height: 100%;
-    padding: 0px 5px 0px 20px;
+    padding: 0px 5px 0px 0px;
   }
   
   a {
@@ -63,11 +66,22 @@
     padding: 5px;
     width: 100%;
   }
+
+  .calendar-content li {
+    background-color: lightblue;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    
+  }
+  .calendar a {
+    margin-left: 3px;
+    margin-left: 3px;
+    font-size: medium;
+    color: black;
+  }
+  
 /* end calendar css */
 
-.calendar-content li {
-  background-color: black;
-}
 
 ul, li{
   list-style-type: none;
