@@ -15,7 +15,7 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.core.files.storage import FileSystemStorage
-
+from django.contrib import messages
 from .models import *
 from .utils import Calendar
 
@@ -205,17 +205,16 @@ def weatherView(request):
                     obj= form.save(commit=False)
                     obj.user = user
                     obj.save()
+                    messages.success(request,"Location add.")
+                    return redirect('manCal:weather')
 
                 else:
-                    err_msg = "Location not found"
+                    messages.warning(request, "Location not found" )
+                    return redirect('manCal:weather')
             if cityCount > 0:
-                err_msg = "Location already added" 
-            if err_msg:
-                message = err_msg
-                message_class = 'alert-danger'
-            else:
-                message = 'Successfull!'
-                message_class = 'alert-success'
+                messages.warning(request, "Location already added" )
+                return redirect('manCal:weather')   
+        return redirect('manCal:weather')
 
     form = AddLocation()
     cities = Locations.objects.filter(user=user)
@@ -254,8 +253,6 @@ def weatherView(request):
     context = {
         'form' : form,
         'weather_data' : weather_data,
-        'message': message,
-        'message_class': message_class
     }
     return render(request, 'weather.html', context)
 
