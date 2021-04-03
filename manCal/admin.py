@@ -9,6 +9,8 @@ admin.site.register(Event)
 admin.site.register(EventMember)
 admin.site.register(EventFiles)
 admin.site.register(Notes)
+admin.site.register(Locations)
+
 
 
 

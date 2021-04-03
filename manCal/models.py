@@ -50,3 +50,10 @@ class Notes(models.Model):
 
     def __str__(self):
         return str(self.note)
+
+class Locations(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    location = models.TextField()
+
+    def __str__(self):
+        return str(self.location)

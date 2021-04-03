@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse, Http404
 from django.contrib.auth.decorators import login_required
-from .forms import signUpForm, EventForm, AddMemberForm
+from .forms import signUpForm, EventForm, AddMemberForm, AddLocation
 import requests
 from datetime import datetime, date
 from django.shortcuts import render, redirect
@@ -15,7 +15,7 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.core.files.storage import FileSystemStorage
-
+from django.contrib import messages
 from .models import *
 from .utils import Calendar
 
@@ -142,7 +142,7 @@ class EventEdit(LoginRequiredMixin, generic.UpdateView):
     fields = ['title', 'description', 'start_time', 'end_time', 'location']
     template_name = 'event.html'
 
-@login_required(login_url='signup')
+@login_required
 def event_details(request, event_id):
     event = Event.objects.get(id=event_id)
     eventmember = EventMember.objects.filter(event=event)
@@ -178,6 +178,85 @@ def event_details(request, event_id):
     return render(request, 'event-details.html', context)
 
 
+
+@login_required
+def weatherView(request):
+    url = 'http://api.openweathermap.org/data/2.5/onecall?lat={lat}&exclude=hourly,minutely&lon={lon}&units=metric&appid=dbd607d4b59f61a34125bf4f2a185f8d'
+    user = CustomUser.objects.get(username= request.user)
+    API_KEY = 'AIzaSyDio4Zj99JOhP8SBQBM3CydIsc91ld-Jbs'
+    base_url = 'https://maps.googleapis.com/maps/api/geocode/json?'
+    err_msg=''
+    message= ''
+    message_class=''
+
+    if request.method == 'POST':
+        location = request.POST.get('location')
+        cityCount = Locations.objects.filter(user=user).filter(location = location).count()
+        form = AddLocation(request.POST)
+        print(location)
+        if form.is_valid():
+            if cityCount == 0:
+                params = {
+                'key' : API_KEY,
+                'address': location
+                }
+                response_test = requests.get(base_url, params=params).json()
+                if response_test['status'] == 'OK':
+                    obj= form.save(commit=False)
+                    obj.user = user
+                    obj.save()
+                    messages.success(request,"Location add.")
+                    return redirect('manCal:weather')
+
+                else:
+                    messages.warning(request, "Location not found" )
+                    return redirect('manCal:weather')
+            if cityCount > 0:
+                messages.warning(request, "Location already added" )
+                return redirect('manCal:weather')   
+        return redirect('manCal:weather')
+
+    form = AddLocation()
+    cities = Locations.objects.filter(user=user)
+
+    weather_data = []
+
+    for city in cities:
+        params = {
+        'key' : API_KEY,
+        'address': city.location
+        }
+        
+        response = requests.get(base_url, params=params).json()
+        
+        if response['status'] == 'OK':
+            geometry = response['results'][0]['geometry']
+            
+            #check if lat and lgn are obtained correctly
+            lat = geometry['location']['lat']
+            lon = geometry['location']['lng']
+
+            r = requests.get(url.format(lat=lat, lon=lon)).json()
+            city_weather = {
+                
+                'location_id' : city.id,
+                'city' : city.location,
+                'temperature' : round(r['current']['temp']),
+                'main' : r['daily'][0]['weather'][0]['main'],
+                'icon' : r['daily'][0]['weather'][0]['icon'],
+                'tempMax' : round(r['daily'][0]['temp']['max']),
+                'tempMin' : round(r['daily'][0]['temp']['min']),
+            }
+
+        weather_data.append(city_weather)
+    
+    context = {
+        'form' : form,
+        'weather_data' : weather_data,
+    }
+    return render(request, 'weather.html', context)
+
+
 @login_required
 def add_eventmember(request, event_id):
     forms = AddMemberForm()
@@ -206,11 +285,17 @@ class EventMemberDeleteView(LoginRequiredMixin, generic.DeleteView):
     template_name = 'event_delete.html'
     success_url = reverse_lazy('manCal:calendar')
 
+@login_required
 def file_delete(request, file_id, event_id):
     file = EventFiles.objects.get(id = file_id)
     file.delete()
     return redirect('manCal:event-detail', event_id = event_id,)
 
+@login_required
+def location_delete(request, location_id):
+    location = Locations.objects.get(id = location_id)
+    location.delete()
+    return redirect('manCal:weather')
 
 @login_required
 def add_files(request):
@@ -235,7 +320,6 @@ def add_note(request):
             user = user,
             note = note
         )
-        return redirect('manCal:calendar', )
 
     return redirect('manCal:calendar', )
 
@@ -245,7 +329,4 @@ def note_delete(request, note_id):
     note.delete()
     return redirect('manCal:calendar')
 
-@login_required
-def weatherView(request):
 
-    return render(request, 'weather.html',)

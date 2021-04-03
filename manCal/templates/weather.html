@@ -2,6 +2,84 @@
 
 {% block content %}
 
-    <p>Home</p>
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{message.tags}} alert-dismissible fade show">
+            {{message}}
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+        </div>
+    {% endfor %}
+ {% endif %}
+<div class="search">
+    <div class="serch_row d-flex justify-content-center mt-3 mb-3 ">
+        <div class="col-md-8">
+            <form method= 'post' action= {% url 'manCal:weather' %} class="flex-nowrap col ml-auto footer-subscribe p-0 "> 
+            {% csrf_token %}
+                {{form.location}}
+                <button type="submit" class=" btn btn-theme bg-orange">Add
+                </button>
+                
+            </form>
+        </div>
+    </div>
+    
+</div>
+<div class="container_weather ">
+    <div class="weather">
+        <div class="row">
+        {% for city_weather in weather_data %}
+            <div class="col-md-4">
+            <div class="card"> <span class="icon"><img src="http://openweathermap.org/img/w/{{ city_weather.icon }}.png"></span>
+                <span class="icon_del" >
+                    <a href='{% url 'manCal:location_delete' city_weather.location_id %}'> 
+                    <img src="https://img.icons8.com/ios-filled/50/000000/circled-x.png">
+                    </a>
+                </span>
+                <div class="title">
+                    <p>{{city_weather.city}}</p>
+                </div>
+                <div class="temp">{{city_weather.temperature}}<sup>&deg;</sup></div>
+                <div class="row">
+                    <div class="col-4">
+                        <div class="header">General</div>
+                        <div class="value">{{city_weather.main}}</div>
+                    </div>
+                    <div class="col-4">
+                        <div class="header">Min Temp</div>
+                        <div class="value">{{city_weather.tempMin}}<sup>&deg;</sup></div>
+                    </div>
+                    <div class="col-4">
+                        <div class="header">Max Temp</div>
+                        <div class="value">{{city_weather.tempMax}}<sup>&deg;</sup></div>
+                    </div>
+                </div>
+            </div>
+            </div>
+            {% endfor %}
+
+        
+        </div>
+    </div>
+</div>
+</div>
     
 {% endblock content %}
+{% block javascript%}
+  <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places&key=AIzaSyDio4Zj99JOhP8SBQBM3CydIsc91ld-Jbs"></script>
+  <script>
+  
+  var searchInput = 'search_input';
+
+    $(document).ready(function () {
+        var autocomplete;
+        autocomplete = new google.maps.places.Autocomplete((document.getElementById('search_input')), {
+            types: ['geocode'],
+        });
+      
+        google.maps.event.addListener(autocomplete, 'place_changed', function () {
+            var near_place = autocomplete.getPlace();
+        });
+    });
+  </script>
+
+{% endblock %}
