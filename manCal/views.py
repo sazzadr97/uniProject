@@ -65,20 +65,40 @@ def logoutView(request):
 def signUpView(request):
     if request.method == "POST":
         form = signUpForm(request.POST)
-
         if form.is_valid():
             form.save()
-        return redirect("/login")
+            messages.success(request,"Registration Successful!")
+            return redirect("/login")
+        else:
+            print('failed after falidation')
+            print (form.errors)
     else:
-        print('register failed after validation')
         form = signUpForm()
     
-    print('register failed')
     return render(request, "signup.html", {"form": form})
 
 @login_required
 def indexView(request):
     return render(request, "index.html")
+
+@login_required
+def profileView(request):
+    
+    if request.method == 'POST':
+        user = CustomUser.objects.get(username= request.user)
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        email = request.POST.get('email')
+        user.first_name= first_name
+        user.last_name = last_name
+        user.email=email
+        user.save()
+        return redirect("manCal:profile")
+
+    context = {
+        
+    }
+    return render(request, "profile.html", context)
 
 def get_date(req_day):
     if req_day:
@@ -330,3 +350,9 @@ def note_delete(request, note_id):
     return redirect('manCal:calendar')
 
 
+@login_required
+def healthView(request):
+    context = {
+
+    }
+    return render(request, 'health.html', context)
