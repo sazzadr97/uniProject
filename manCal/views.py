@@ -353,7 +353,60 @@ def note_delete(request, note_id):
 
 @login_required
 def healthView(request):
-    context = {
+    user = CustomUser.objects.get(username= request.user)
+    
+    if Exercise.objects.filter(user= user).exists():
+        exercise = Exercise.objects.get(user= user)
+        context = {
+            'exercise' : exercise
+        }
+        return render(request, 'health.html', context)
+    
+    return render(request, 'health.html')
 
-    }
-    return render(request, 'health.html', context)
+@login_required
+def addExercise(request):
+    if request.method == 'POST':
+        print(request.POST)
+        user = CustomUser.objects.get(username= request.user)
+        lunges_set = int(request.POST.get('Lunges_set'))
+        lunges_rep = int(request.POST.get('Lunges_rep'))
+        pushups_set = int(request.POST.get('Pushups_set'))
+        pushups_rep = int(request.POST.get('Pushups_rep'))
+        squats_set = int(request.POST.get('Squats_set'))
+        squats_rep = int(request.POST.get('Squats_rep'))
+        burpees_set = int(request.POST.get('Burpees_set'))
+        burpees_rep = int(request.POST.get('Burpees_rep'))
+        planks_set = int(request.POST.get('Planks_set'))
+        planks_rep = int(request.POST.get('Planks_rep'))
+        if not Exercise.objects.filter(user= user).exists():
+            print('creation')
+            Exercise.objects.create(
+                user= user,
+                Lunges_set = lunges_set,
+                Lunges_rep = lunges_rep,
+                Pushups_set = pushups_set,
+                Pushups_rep = pushups_rep,
+                Squats_set = squats_set,
+                Squats_rep = squats_rep,
+                Burpees_set = burpees_set,
+                Burpees_rep = burpees_rep,
+                Planks_set = planks_set,
+                Planks_rep = planks_rep
+            )
+            return redirect("manCal:health")
+        else:
+            print('update')
+            exercise = Exercise.objects.get(user= user)
+            exercise.Lunges_set = lunges_set
+            exercise.Lunges_rep = lunges_rep
+            exercise.Pushups_set = pushups_set
+            exercise.Pushups_rep = pushups_rep
+            exercise.Squats_set = squats_set
+            exercise.Squats_rep = squats_rep
+            exercise.Burpees_set = burpees_set
+            exercise.Burpees_rep = burpees_rep
+            exercise.Planks_set = planks_set
+            exercise.Planks_rep = planks_rep
+            exercise.save()
+            return redirect("manCal:health")

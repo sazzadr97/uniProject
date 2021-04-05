@@ -4,7 +4,7 @@
 
 <!-- Button trigger modal -->
     <div class="conteiner_cal mt-2">
-        <div class="notes-conteiner float-right col-lg-4 col-md-12 ">
+        <div class="notes-conteiner float-right col-lg-3 col-md-12 ">
             <h1> Notes </h1>
             <form class="form-inline" method="POST" action= {% url 'manCal:add_note' %}>
                 {% csrf_token %}
@@ -24,7 +24,7 @@
             {% endfor %}
             </ul>
         </div>
-        <div class="calendar-content float-left col-md-12 col-lg-8 border-right">
+        <div class="calendar-content float-left col-md-12 col-lg-9 border-right">
             <div class="clearfix">
                 <a class="btn btn-info right mr-2" href="{% url 'manCal:calendar' %}?{{ next_month }} "> Next Month >> </a>
                 <a class="btn btn-info text-center mr-2" href="{% url 'manCal:event_new' %}"> Add events </a>

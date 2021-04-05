@@ -21,6 +21,8 @@ urlpatterns = [
     path('weather/', views.weatherView, name='weather'),
     path('weather/<int:location_id>/location_delete/', views.location_delete, name="location_delete"),
     path('health/', views.healthView, name='health'),
+    path('health/addExercise', views.addExercise, name='exercise_add'),
+
     path('profile/', views.profileView, name='profile'),
 
 

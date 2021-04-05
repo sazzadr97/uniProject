@@ -1,5 +1,220 @@
 {% extends "base.html" %}
 {% load static %}
+
+{% block mycss %}
+<style>
+    
+    .nav-tabs {
+        background-color: #5ec6ea;
+    }
+    .slide-cont {
+        background-color: black;
+    }
+    nav-item .active {
+        background-color: black;
+    }
+</style>
+{% endblock mycss %}
 {% block content %}
 
+<div class = "slide-cont">
+    <div id="carouselExampleIndicators" class="carousel slide pb-1" data-ride="carousel">
+    <ol class="carousel-indicators">
+        <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+        <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+        <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+    </ol>
+    <div class="carousel-inner">
+        <div class="carousel-item active">
+        <img class="d-block w-100 h-15" src="{% static "media/slide1.jpg" %}" alt="First slide">
+        </div>
+        <div class="carousel-item">
+        <img class="d-block w-100 h-15" src="{% static "media/slide2.jpg" %}" alt="Second slide">
+        </div>
+        <div class="carousel-item">
+        <img class="d-block w-100 h-15" src="{% static "media/slide3.jpg" %}" alt="Third slide">
+        </div>
+    </div>
+    <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+    </a>
+    <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+    </a>
+    </div>
+</div>
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+    <li class="nav-item w-50">
+        <a class="nav-link active" id="exercise-tab" data-toggle="tab" href="#exercise" role="tab" aria-controls="exercise" aria-selected="true">Esercise</a>
+    </li>
+    <li class="nav-item w-50">
+        <a class="nav-link" id="files-tab" data-toggle="tab" href="#food" role="tab" aria-controls="food" aria-selected="false">Files</a>
+    </li>
+</ul>
+<div class="tab-content pt-1 pl-2" id="myTabContent">
+    <div class="tab-pane fade show active" id="exercise" role="tabpanel" aria-labelledby="exercise-tab">
+        <div class="row mr-0">
+            <div class="col-lg-5 col-md-6 border-right border-top pb-4" id="FixedDiv">
+            <h3>Daily Exercise</h3>
+                <table class="table table-striped table-dark">
+                <thead>
+                    <tr>
+                    <th scope="col">Exercise</th>
+                    <th scope="col">Set</th>
+                    <th scope="col">repetition</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                    <th scope="row">Lunges</th>
+                    <td>{{exercise.Lunges_set}}</td>
+                    <td>{{exercise.Lunges_rep}}</td>
+                    </tr>
+                    <tr>
+                    <th scope="row">Pushups</th>
+                    <td>{{exercise.Pushups_set}}</td>
+                    <td>{{exercise.Pushups_rep}}</td>
+                    </tr>
+                    <tr>
+                    <th scope="row">Squats</th>
+                    <td>{{exercise.Squats_set}}</td>
+                    <td>{{exercise.Squats_rep}}</td>
+                    </tr>
+                    <tr>
+                    <th scope="row">Burpees</th>
+                    <td>{{exercise.Burpees_set}}</td>
+                    <td>{{exercise.Burpees_rep}}</td>
+                    </tr>
+                    <tr>
+                    <th scope="row">Planks</th>
+                    <td>{{exercise.Planks_set}}</td>
+                    <td>{{exercise.Planks_rep}}</td>
+                    </tr>
+                </tbody>
+                </table>
+                <div class="row mr-0 pl-3">
+                    <!-- Button trigger modal -->
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">
+                    Set workout level
+                    </button>
+
+                    <!-- Modal -->
+                    
+                    <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                    <form method= 'post' action= {% url 'manCal:exercise_add' %} >
+                    {% csrf_token %}
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLongTitle">Set workout level</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                                <table class="table table-sm table-dark">
+                                <thead>
+                                    <tr>
+                                    <th scope="col">Exercise</th>
+                                    <th scope="col">Set</th>
+                                    <th scope="col">repetition</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                    <th scope="row">Lunges</th>
+                                    <td><input type="number" class="form-control" id="Lunges_set" name="Lunges_set"></td>
+                                    <td><input type="number" class="form-control" id="Lunges_rep" name="Lunges_rep"></td>
+                                    </tr>
+                                    <tr>
+                                    <th scope="row">Pushups</th>
+                                    <td><input type="number" class="form-control" id="Pushups_set" name="Pushups_set"></td>
+                                    <td><input type="number" class="form-control" id="Pushups_rep" name="Pushups_rep"></td>
+                                    </tr>
+                                    <tr>
+                                    <th scope="row">Squats</th>
+                                    <td><input type="number" class="form-control" id="Squats_set" name="Squats_set"></td>
+                                    <td><input type="number" class="form-control" id="Squats_rep" name="Squats_rep"></td>
+                                    </tr>
+                                    <tr>
+                                    <th scope="row">Burpees</th>
+                                    <td><input type="number" class="form-control" id="Burpees_set" name="Burpees_set"></td>
+                                    <td><input type="number" class="form-control" id="Burpees_rep" name="Burpees_rep"></td>
+                                    </tr>
+                                    <tr>
+                                    <th scope="row">Planks</th>
+                                    <td><input type="number" class="form-control" id="Planks_set" name="Planks_set"></td>
+                                    <td><input type="number" class="form-control" id="Planks_rep" name="Planks_rep"></td>
+                                    </tr>
+                                </tbody>
+                                </table> 
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Save changes</button>
+                            </div>
+                        </div>                    
+                    </div>
+                    </form> 
+                    </div>
+                    
+                </div>
+                
+            </div>
+        
+            <div class="col-lg-7 col-md-6 border-left border-top">
+                <h3>Guides</h3>
+                <div class= "guide">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                        <iframe width="100%" height="300px" src="https://www.youtube.com/embed/3XDriUn0udo"></iframe>
+                            <h5 class="card-title">Lunges</h5>
+                            <p class="card-text">Challenging your balance is an essential part of a well-rounded exercise routine. Lunges do just that, promoting functional movement, while also increasing strength in your legs and glutes.</p>                        
+                            </div>
+                    </div>
+                    <div class="card mb-3">
+                        <div class="card-body">
+                        <iframe width="100%" height="300px" src="https://www.youtube.com/embed/IODxDxX7oi4"></iframe>
+                            <h5 class="card-title">Pushups</h5>
+                            <p class="card-text">Drop and give me 20! Pushups are one of the most basic, yet effective, body weight moves you can perform because of the number of muscles that are recruited to perform them.</p>
+                        </div>
+                    </div>
+                    <div class="card mb-3">
+                        <div class="card-body">
+                        <iframe width="100%" height="300px" src="https://www.youtube.com/embed/YaXPRqUwItQ"></iframe>
+                            <h5 class="card-title">Squats</h5>
+                            <p class="card-text">Squats increase lower body and core strength, as well as flexibility in your lower back and hips. Because they engage some of the largest muscles in the body, they also pack a major punch in terms of calories burned.</p>
+                        </div>
+                    </div>
+                    <div class="card mb-3">
+                        <div class="card-body">
+                        <iframe width="100%" height="300px" src="https://www.youtube.com/embed/qLBImHhCXSw"></iframe>
+                            <h5 class="card-title">Burpees</h5>
+                            <p class="card-text">An exercise we love to hate, burpees are a super effective whole-body move that provides great bang for your buck for cardiovascular endurance and muscle strength.</p>
+                            
+                        </div>
+                    </div>
+                    <div class="card mb-3">
+                        <div class="card-body">
+                        <iframe width="100%" height="300px" src="https://www.youtube.com/embed/F-nQ_KJgfCY"></iframe>
+                            <h5 class="card-title">Planks</h5>
+                            <p class="card-text">Planks are an effective way to target both your abdominal muscles and your whole body. Planking stabilizes your core without straining your back the way situps or crunches might.</p>
+                            
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            
+        </div>
+    </div>
+    <div class="tab-pane fade" id="food" role="tabpanel" aria-labelledby="food-tab">
+        food
+    </div>
+</div>
+
 {% endblock content %}
+

@@ -10,6 +10,7 @@ admin.site.register(EventMember)
 admin.site.register(EventFiles)
 admin.site.register(Notes)
 admin.site.register(Locations)
+admin.site.register(Exercise)
 
 
 
