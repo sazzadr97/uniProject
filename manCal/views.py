@@ -21,6 +21,10 @@ from .utils import Calendar
 
 from django.contrib.auth.forms import UserCreationForm
 
+def homeView(request):
+    return render(request, 'home.html')
+
+
 def loginView(request):
     # Get username and password from request
     username = request.POST['username']
@@ -41,7 +45,7 @@ def loginView(request):
             'loggedin': True
         }
 
-        response = render(request, 'news/index.html', context)
+        response = render(request, 'manCal/index.html', context)
 
         # Remember last login in cookie
         now = D.datetime.utcnow()
