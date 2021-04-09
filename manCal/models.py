@@ -57,3 +57,19 @@ class Locations(models.Model):
 
     def __str__(self):
         return str(self.location)
+
+class Exercise(models.Model):
+    user = user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    Lunges_set = models.IntegerField()
+    Lunges_rep = models.IntegerField()
+    Pushups_set = models.IntegerField()
+    Pushups_rep = models.IntegerField()
+    Squats_set = models.IntegerField()
+    Squats_rep = models.IntegerField()
+    Burpees_set = models.IntegerField()
+    Burpees_rep = models.IntegerField()
+    Planks_set = models.IntegerField()
+    Planks_rep = models.IntegerField()
+
+    def __str__(self):
+        return str(self.user)

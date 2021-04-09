@@ -65,20 +65,40 @@ def logoutView(request):
 def signUpView(request):
     if request.method == "POST":
         form = signUpForm(request.POST)
-
         if form.is_valid():
             form.save()
-        return redirect("/login")
+            messages.success(request,"Registration Successful!")
+            return redirect("/login")
+        else:
+            print('failed after falidation')
+            print (form.errors)
     else:
-        print('register failed after validation')
         form = signUpForm()
     
-    print('register failed')
     return render(request, "signup.html", {"form": form})
 
 @login_required
 def indexView(request):
     return render(request, "index.html")
+
+@login_required
+def profileView(request):
+    
+    if request.method == 'POST':
+        user = CustomUser.objects.get(username= request.user)
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        email = request.POST.get('email')
+        user.first_name= first_name
+        user.last_name = last_name
+        user.email=email
+        user.save()
+        return redirect("manCal:profile")
+
+    context = {
+        
+    }
+    return render(request, "profile.html", context)
 
 def get_date(req_day):
     if req_day:
@@ -106,14 +126,15 @@ class CalendarView(LoginRequiredMixin, generic.ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         d = get_date(self.request.GET.get('month', None))
-        cal = Calendar(d.year, d.month)
-        html_cal = cal.formatmonth(withyear=True)
         user = CustomUser.objects.get(username= self.request.user)
+        cal = Calendar(d.year, d.month, user)
+        html_cal = cal.formatmonth(withyear=True)
         notes = Notes.objects.filter(user=user)
         context['calendar'] = mark_safe(html_cal)
         context['prev_month'] = prev_month(d)
         context['next_month'] = next_month(d)
         context['notes'] = notes
+        context['user']= user
         return context
 
 
@@ -330,3 +351,62 @@ def note_delete(request, note_id):
     return redirect('manCal:calendar')
 
 
+@login_required
+def healthView(request):
+    user = CustomUser.objects.get(username= request.user)
+    
+    if Exercise.objects.filter(user= user).exists():
+        exercise = Exercise.objects.get(user= user)
+        context = {
+            'exercise' : exercise
+        }
+        return render(request, 'health.html', context)
+    
+    return render(request, 'health.html')
+
+@login_required
+def addExercise(request):
+    if request.method == 'POST':
+        print(request.POST)
+        user = CustomUser.objects.get(username= request.user)
+        lunges_set = int(request.POST.get('Lunges_set'))
+        lunges_rep = int(request.POST.get('Lunges_rep'))
+        pushups_set = int(request.POST.get('Pushups_set'))
+        pushups_rep = int(request.POST.get('Pushups_rep'))
+        squats_set = int(request.POST.get('Squats_set'))
+        squats_rep = int(request.POST.get('Squats_rep'))
+        burpees_set = int(request.POST.get('Burpees_set'))
+        burpees_rep = int(request.POST.get('Burpees_rep'))
+        planks_set = int(request.POST.get('Planks_set'))
+        planks_rep = int(request.POST.get('Planks_rep'))
+        if not Exercise.objects.filter(user= user).exists():
+            print('creation')
+            Exercise.objects.create(
+                user= user,
+                Lunges_set = lunges_set,
+                Lunges_rep = lunges_rep,
+                Pushups_set = pushups_set,
+                Pushups_rep = pushups_rep,
+                Squats_set = squats_set,
+                Squats_rep = squats_rep,
+                Burpees_set = burpees_set,
+                Burpees_rep = burpees_rep,
+                Planks_set = planks_set,
+                Planks_rep = planks_rep
+            )
+            return redirect("manCal:health")
+        else:
+            print('update')
+            exercise = Exercise.objects.get(user= user)
+            exercise.Lunges_set = lunges_set
+            exercise.Lunges_rep = lunges_rep
+            exercise.Pushups_set = pushups_set
+            exercise.Pushups_rep = pushups_rep
+            exercise.Squats_set = squats_set
+            exercise.Squats_rep = squats_rep
+            exercise.Burpees_set = burpees_set
+            exercise.Burpees_rep = burpees_rep
+            exercise.Planks_set = planks_set
+            exercise.Planks_rep = planks_rep
+            exercise.save()
+            return redirect("manCal:health")

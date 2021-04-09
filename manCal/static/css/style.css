@@ -5,8 +5,8 @@ ul, li{
 #map {
   height: 500px;
   width: 100%;
+  
 }
-
 
 
 /*  weather css */
@@ -30,21 +30,6 @@ ul, li{
 
 
 
-.container_weather {
-  height: 80vh;
-  width: 100%;
-  background-color: #ffffff;
-  border-color: #ffffff;
-  align-items: center;
-  border-radius: 1rem;
-  vertical-align: middle
-}
-
-@media(max-width:767px) {
-  .container_weather {
-      height: fit-content
-  }
-}
 
 .weather {
   width: 100%
@@ -60,10 +45,10 @@ ul, li{
   padding: 1rem;
   margin: 1.5rem 4vw;
   border-radius: 1rem;
-  background-color: rgba(238, 237, 237, 0.22);
+  background-color: #00c4ff94;
   border-color: rgba(238, 237, 237, 0.22);
   box-shadow: 5px 6px 6px 2px #e9ecef;
-  text-align: center
+  text-align: center;
 }
 
 @media(max-width:768px) {
@@ -101,7 +86,7 @@ ul, li{
 }
 
 .header {
-  color: #dddddd
+  color: black;
 }
 
 .col-4 {
@@ -142,9 +127,9 @@ ul, li{
   font-size: 12px;
   padding: 12px 40% 12px 20px;
   margin-bottom: 5px;
-  background: transparent;
+  background: #dae0e5;
   width: 100%;
-  box-shadow: none !important
+  box-shadow: none !important;
 }
 
 a,

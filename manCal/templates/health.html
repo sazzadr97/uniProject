@@ -1,0 +1,539 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block mycss %}
+<style>
+    
+    .nav-tabs {
+        background-color: #5ec6ea;
+    }
+    .slide-cont {
+        background-color: black;
+    }
+    nav-item .active {
+        background-color: black;
+    }
+    #map {
+        height: 70vh; 
+    }
+    .text-center {
+        text-align: center;
+    }
+    .card {
+        margin : 2px;
+        margin-top: 15px;
+    }
+
+</style>
+{% endblock mycss %}
+{% block content %}
+
+<div class = "slide-cont">
+    <div id="carouselExampleIndicators" class="carousel slide pb-1" data-ride="carousel">
+    <ol class="carousel-indicators">
+        <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+        <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+        <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+    </ol>
+    <div class="carousel-inner">
+        <div class="carousel-item active">
+        <img class="d-block w-100 h-15" src="{% static "media/slide1.jpg" %}" alt="First slide">
+        </div>
+        <div class="carousel-item">
+        <img class="d-block w-100 h-15" src="{% static "media/slide2.jpg" %}" alt="Second slide">
+        </div>
+        <div class="carousel-item">
+        <img class="d-block w-100 h-15" src="{% static "media/slide3.jpg" %}" alt="Third slide">
+        </div>
+    </div>
+    <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+    </a>
+    <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+    </a>
+    </div>
+</div>
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+    <li class="nav-item">
+        <a class="nav-link active" id="exercise-tab" data-toggle="tab" href="#exercise" role="tab" aria-controls="exercise" aria-selected="true">Exercise</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" id="files-tab" data-toggle="tab" href="#food" role="tab" aria-controls="food" aria-selected="false">Eat out</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" id="exercise-tab" data-toggle="tab" href="#recipe" role="tab" aria-controls="exercise" aria-selected="true">Make at home</a>
+    </li>
+</ul>
+<div class="tab-content pt-1 pl-2" id="myTabContent">
+    <div class="tab-pane fade show active" id="exercise" role="tabpanel" aria-labelledby="exercise-tab">
+        <div class="row mr-0">
+            <div class="col-lg-5 col-md-6 border-right border-top pb-4" id="FixedDiv">
+            <h3 class="text-center">Daily Exercise</h3>
+                <table class="table table-striped table-dark">
+                <thead>
+                    <tr>
+                    <th scope="col">Exercise</th>
+                    <th scope="col">Set</th>
+                    <th scope="col">repetition</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                    <th scope="row">Lunges</th>
+                    <td>{{exercise.Lunges_set}}</td>
+                    <td>{{exercise.Lunges_rep}}</td>
+                    </tr>
+                    <tr>
+                    <th scope="row">Pushups</th>
+                    <td>{{exercise.Pushups_set}}</td>
+                    <td>{{exercise.Pushups_rep}}</td>
+                    </tr>
+                    <tr>
+                    <th scope="row">Squats</th>
+                    <td>{{exercise.Squats_set}}</td>
+                    <td>{{exercise.Squats_rep}}</td>
+                    </tr>
+                    <tr>
+                    <th scope="row">Burpees</th>
+                    <td>{{exercise.Burpees_set}}</td>
+                    <td>{{exercise.Burpees_rep}}</td>
+                    </tr>
+                    <tr>
+                    <th scope="row">Planks</th>
+                    <td>{{exercise.Planks_set}}</td>
+                    <td>{{exercise.Planks_rep}}</td>
+                    </tr>
+                </tbody>
+                </table>
+                <div class="row mr-0 pl-3">
+                    <!-- Button trigger modal -->
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">
+                    Set workout level
+                    </button>
+
+                    <!-- Modal -->
+                    
+                    <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                    <form method= 'post' action= {% url 'manCal:exercise_add' %} >
+                    {% csrf_token %}
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLongTitle">Set workout level</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                                <table class="table table-sm table-dark">
+                                <thead>
+                                    <tr>
+                                    <th scope="col">Exercise</th>
+                                    <th scope="col">Set</th>
+                                    <th scope="col">repetition</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                    <th scope="row">Lunges</th>
+                                    <td><input type="number" class="form-control" id="Lunges_set" name="Lunges_set"></td>
+                                    <td><input type="number" class="form-control" id="Lunges_rep" name="Lunges_rep"></td>
+                                    </tr>
+                                    <tr>
+                                    <th scope="row">Pushups</th>
+                                    <td><input type="number" class="form-control" id="Pushups_set" name="Pushups_set"></td>
+                                    <td><input type="number" class="form-control" id="Pushups_rep" name="Pushups_rep"></td>
+                                    </tr>
+                                    <tr>
+                                    <th scope="row">Squats</th>
+                                    <td><input type="number" class="form-control" id="Squats_set" name="Squats_set"></td>
+                                    <td><input type="number" class="form-control" id="Squats_rep" name="Squats_rep"></td>
+                                    </tr>
+                                    <tr>
+                                    <th scope="row">Burpees</th>
+                                    <td><input type="number" class="form-control" id="Burpees_set" name="Burpees_set"></td>
+                                    <td><input type="number" class="form-control" id="Burpees_rep" name="Burpees_rep"></td>
+                                    </tr>
+                                    <tr>
+                                    <th scope="row">Planks</th>
+                                    <td><input type="number" class="form-control" id="Planks_set" name="Planks_set"></td>
+                                    <td><input type="number" class="form-control" id="Planks_rep" name="Planks_rep"></td>
+                                    </tr>
+                                </tbody>
+                                </table> 
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Save changes</button>
+                            </div>
+                        </div>                    
+                    </div>
+                    </form> 
+                    </div>
+                    
+                </div>
+                
+            </div>
+            <div class="col-lg-7 col-md-6 border-left border-top">
+                <h3 class="text-center">Guides</h3>
+                <div class= "guide">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                        <iframe width="100%" height="300px" src="https://www.youtube.com/embed/3XDriUn0udo"></iframe>
+                            <h5 class="card-title">Lunges</h5>
+                            <p class="card-text">Challenging your balance is an essential part of a well-rounded exercise routine. Lunges do just that, promoting functional movement, while also increasing strength in your legs and glutes.</p>                        
+                            </div>
+                    </div>
+                    <div class="card mb-3">
+                        <div class="card-body">
+                        <iframe width="100%" height="300px" src="https://www.youtube.com/embed/IODxDxX7oi4"></iframe>
+                            <h5 class="card-title">Pushups</h5>
+                            <p class="card-text">Drop and give me 20! Pushups are one of the most basic, yet effective, body weight moves you can perform because of the number of muscles that are recruited to perform them.</p>
+                        </div>
+                    </div>
+                    <div class="card mb-3">
+                        <div class="card-body">
+                        <iframe width="100%" height="300px" src="https://www.youtube.com/embed/YaXPRqUwItQ"></iframe>
+                            <h5 class="card-title">Squats</h5>
+                            <p class="card-text">Squats increase lower body and core strength, as well as flexibility in your lower back and hips. Because they engage some of the largest muscles in the body, they also pack a major punch in terms of calories burned.</p>
+                        </div>
+                    </div>
+                    <div class="card mb-3">
+                        <div class="card-body">
+                        <iframe width="100%" height="300px" src="https://www.youtube.com/embed/qLBImHhCXSw"></iframe>
+                            <h5 class="card-title">Burpees</h5>
+                            <p class="card-text">An exercise we love to hate, burpees are a super effective whole-body move that provides great bang for your buck for cardiovascular endurance and muscle strength.</p>
+                            
+                        </div>
+                    </div>
+                    <div class="card mb-3">
+                        <div class="card-body">
+                        <iframe width="100%" height="300px" src="https://www.youtube.com/embed/F-nQ_KJgfCY"></iframe>
+                            <h5 class="card-title">Planks</h5>
+                            <p class="card-text">Planks are an effective way to target both your abdominal muscles and your whole body. Planking stabilizes your core without straining your back the way situps or crunches might.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            
+        </div>
+    </div>
+    <div class="tab-pane fade" id="food" role="tabpanel" aria-labelledby="food-tab">
+        <input id="input" class="pac-target-input" placeholder="Enter address" />
+        <div id="map"></div>
+
+        <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
+        
+    </div>
+    <div class="tab-pane fade" id="recipe" role="tabpanel" aria-labelledby="food-tab">
+        <div class="search pt-3">
+            <h3 class="text-center"> Search your recipe here </h3>
+                <form class="d-flex justify-content-center  col ml-auto footer-subscribe p-0 "> 
+                <div class="col-md-8">
+                    <input type="text" id="recipe-text" name="recipe" class="form-contro pac-target-input" id="search-text" placeholder="Search..." required="" autocomplete="off">
+                    <button type="button" id="search" class=" btn btn-theme bg-orange">Search
+                    </button>
+                        
+                </div>
+                </form>
+        </div>
+        
+        <div class="food-cont row mr-0"  >
+            
+        </div>
+    </div>
+    
+</div>
+
+{% endblock content %}
+
+{% block javascript %}
+<script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDio4Zj99JOhP8SBQBM3CydIsc91ld-Jbs&callback=initMap&libraries=localContext,places&v=beta" async></script>
+<script>
+    let map;
+    let localContextMapView;
+    const styles = [
+    {
+        elementType: "labels",
+        stylers: [
+        {
+            visibility: "on",
+        },
+        ],
+    },
+    {
+        elementType: "labels.icon",
+        stylers: [
+        {
+            visibility: "off",
+        },
+        ],
+    },
+    {
+        elementType: "labels.text.fill",
+        stylers: [
+        {
+            color: "#616161",
+        },
+        ],
+    },
+    {
+        elementType: "labels.text.stroke",
+        stylers: [
+        {
+            color: "#f5f5f5",
+        },
+        ],
+    },
+    {
+        featureType: "administrative.land_parcel",
+        stylers: [
+        {
+            visibility: "off",
+        },
+        ],
+    },
+    {
+        featureType: "administrative.land_parcel",
+        elementType: "labels.text.fill",
+        stylers: [
+        {
+            color: "#bdbdbd",
+        },
+        ],
+    },
+    {
+        featureType: "administrative.neighborhood",
+        stylers: [
+        {
+            visibility: "on",
+        },
+        ],
+    },
+    {
+        featureType: "poi",
+        elementType: "geometry",
+        stylers: [
+        {
+            color: "#eeeeee",
+        },
+        ],
+    },
+    {
+        featureType: "poi",
+        elementType: "labels.text.fill",
+        stylers: [
+        {
+            color: "#757575",
+        },
+        ],
+    },
+    {
+        featureType: "poi.park",
+        elementType: "geometry",
+        stylers: [
+        {
+            color: "#e5e5e5",
+        },
+        ],
+    },
+    {
+        featureType: "poi.park",
+        elementType: "labels.text.fill",
+        stylers: [
+        {
+            color: "#9e9e9e",
+        },
+        ],
+    },
+    {
+        featureType: "road",
+        elementType: "geometry",
+        stylers: [
+        {
+            color: "#ffffff",
+        },
+        ],
+    },
+    {
+        featureType: "road.arterial",
+        elementType: "labels.text.fill",
+        stylers: [
+        {
+            color: "#757575",
+        },
+        ],
+    },
+    {
+        featureType: "road.highway",
+        elementType: "geometry",
+        stylers: [
+        {
+            color: "#dadada",
+        },
+        ],
+    },
+    {
+        featureType: "road.highway",
+        elementType: "labels.text.fill",
+        stylers: [
+        {
+            color: "#616161",
+        },
+        ],
+    },
+    {
+        featureType: "road.local",
+        elementType: "labels.text.fill",
+        stylers: [
+        {
+            color: "#9e9e9e",
+        },
+        ],
+    },
+    {
+        featureType: "transit.line",
+        elementType: "geometry",
+        stylers: [
+        {
+            color: "#e5e5e5",
+        },
+        ],
+    },
+    {
+        featureType: "transit.station",
+        elementType: "geometry",
+        stylers: [
+        {
+            color: "#eeeeee",
+        },
+        ],
+    },
+    {
+        featureType: "water",
+        elementType: "geometry",
+        stylers: [
+        {
+            color: "#c9c9c9",
+        },
+        ],
+    },
+    {
+        featureType: "water",
+        elementType: "labels.text.fill",
+        stylers: [
+        {
+            color: "#9e9e9e",
+        },
+        ],
+    },
+    ];
+
+    function initMap() {
+    localContextMapView = new google.maps.localContext.LocalContextMapView({
+        element: document.getElementById("map"),
+        placeTypePreferences: [
+        { type: "restaurant", weight: 2 },
+        ],
+        maxPlaceCount: 24,
+    });
+    map = localContextMapView.map;
+    map.setOptions({
+        center: { lat: 51.507307, lng: -0.08114 },
+        zoom: 16,
+        styles,
+    });
+    // Build and add the Autocomplete search bar
+    const input = document.getElementById("input");
+    const options = {
+    };
+    const autocomplete = new google.maps.places.Autocomplete(input, options);
+    autocomplete.setFields(["address_components", "geometry", "name"]);
+    autocomplete.addListener("place_changed", () => {
+        const place = autocomplete.getPlace();
+
+        if (!place || !place.geometry) {
+        // User entered the name of a Place that was not suggested and
+        // pressed the Enter key, or the Place Details request failed.
+        window.alert("No address available for that input.");
+        return;
+        }
+        // Recenter the map to the selected address
+        map.setOptions({
+        center: place.geometry.location,
+        zoom: 16,
+        });
+        // Update the localContext directionsOptions origin
+        localContextMapView.directionsOptions = {
+        origin: place.geometry.location,
+        };
+        new google.maps.Marker({
+        position: place.geometry.location,
+        map: map,
+        icon:
+            "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAbUlEQVR4Ae3LoQ2AMAAF0TMYPJoV2IApGIJtmIMtmIAVqutraj6IiqZpmyYoCO/08R7bXbOOHSF2Ohr0HCh00EPdwImiTgYqRgxKMowUTFiUyTKRMeNQIcdMYsGjSp6FyIoaWkmoUuLxEPzDh1xIaLFFuTyHMgAAAABJRU5ErkJggg==",
+        zIndex: 30,
+        });
+        // update the results with new places
+        localContextMapView.search();
+    });
+    }
+</script>
+<script>
+$(document).on("keydown", "form", function(event) { 
+    return event.key != "Enter";
+});
+
+let searchButton = document.querySelector("#search")
+
+searchButton.addEventListener("click", ()=>{
+    console.log("button")
+    food = $("#recipe-text").val()
+    console.log(food)
+    sendApiRequest(food)
+})
+
+async function sendApiRequest(food){
+    console.log(food)
+    let API_ID = "7412288b"
+    let API_KEY = "d94008edf981e98d14bed2c7c77a22c6"
+    let response = await fetch(`https://api.edamam.com/search?app_id=${API_ID}&app_key=${API_KEY}&q=${food}`);
+    let data = await response.json()
+    console.log(data)
+    useApiData(data)
+}
+
+function useApiData(data){
+    var i;
+    console.log("button")
+    if (data.hits.length > 0){
+        for(i = 0; i< data.hits.length; i++ ){
+        $(".food-cont").append(
+        `<div class="col-md-4">
+            <div class="card">
+                <img class="card-img-top" src="${data.hits[i].recipe.image}" alt="${data.hits[i].recipe.label}">
+                <div class="card-body">
+                    <h5 class="card-title">${data.hits[i].recipe.label}</h5>
+                    <p class="card-text">Source: ${data.hits[i].recipe.source}</p>
+                    <a href="${data.hits[i].recipe.url}" target="_blank" class="btn btn-primary">Check it out</a>
+                </div>
+            </div>
+        </div>`
+        );
+        }
+    }
+    else {
+        alert("No recipe found")
+    }
+    
+}
+</script>
+
+{% endblock javascript %}
+

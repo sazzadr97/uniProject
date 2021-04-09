@@ -4,11 +4,21 @@ from django.contrib.auth.forms import UserCreationForm
 from django.forms import ModelForm, DateInput
 
 class signUpForm(UserCreationForm):
-    # Change from textfield into datepicker 
-    class Meta:
-        model = CustomUser
-        # Order of info required at signup
-        fields = ["username", "email", "password1", "password2"]
+  # Change from textfield into datepicker 
+  class Meta:
+    model = CustomUser
+    # Order of info required at signup
+    fields = ["username", "email", "password1", "password2"]
+
+""" class UserUpdate(forms.ModelForm):
+  class Meta:
+    model = CustomUser
+    fields = ["first_name","last_name","email"]
+    widgets = {
+      'first_name': forms.TextInput(attrs={'value': CustomUser.first_name}),
+      'last_name': forms.TextInput(attrs={'value': CustomUser.last_name}),
+      'email': forms.EmailInput(attrs={'value':CustomUser.email}),
+    } """
 
 class EventForm(ModelForm):
   class Meta:
