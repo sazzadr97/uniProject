@@ -7,7 +7,7 @@ from . import views
 
 app_name = 'manCal'
 urlpatterns = [
-    path('', views.indexView, name="index"),
+    path('index/', views.indexView, name="index"),
     path('calendar/', views.CalendarView.as_view(), name='calendar'),
     path('event/new/', views.create_event, name='event_new'),
     path('event/edit/<int:pk>/', views.EventEdit.as_view(), name='event_edit'),
