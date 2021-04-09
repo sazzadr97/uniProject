@@ -13,6 +13,17 @@
     nav-item .active {
         background-color: black;
     }
+    #map {
+        height: 70vh; 
+    }
+    .text-center {
+        text-align: center;
+    }
+    .card {
+        margin : 2px;
+        margin-top: 15px;
+    }
+
 </style>
 {% endblock mycss %}
 {% block content %}
@@ -46,18 +57,21 @@
     </div>
 </div>
 <ul class="nav nav-tabs" id="myTab" role="tablist">
-    <li class="nav-item w-50">
-        <a class="nav-link active" id="exercise-tab" data-toggle="tab" href="#exercise" role="tab" aria-controls="exercise" aria-selected="true">Esercise</a>
+    <li class="nav-item">
+        <a class="nav-link active" id="exercise-tab" data-toggle="tab" href="#exercise" role="tab" aria-controls="exercise" aria-selected="true">Exercise</a>
     </li>
-    <li class="nav-item w-50">
-        <a class="nav-link" id="files-tab" data-toggle="tab" href="#food" role="tab" aria-controls="food" aria-selected="false">Files</a>
+    <li class="nav-item">
+        <a class="nav-link" id="files-tab" data-toggle="tab" href="#food" role="tab" aria-controls="food" aria-selected="false">Eat out</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" id="exercise-tab" data-toggle="tab" href="#recipe" role="tab" aria-controls="exercise" aria-selected="true">Make at home</a>
     </li>
 </ul>
 <div class="tab-content pt-1 pl-2" id="myTabContent">
     <div class="tab-pane fade show active" id="exercise" role="tabpanel" aria-labelledby="exercise-tab">
         <div class="row mr-0">
             <div class="col-lg-5 col-md-6 border-right border-top pb-4" id="FixedDiv">
-            <h3>Daily Exercise</h3>
+            <h3 class="text-center">Daily Exercise</h3>
                 <table class="table table-striped table-dark">
                 <thead>
                     <tr>
@@ -163,9 +177,8 @@
                 </div>
                 
             </div>
-        
             <div class="col-lg-7 col-md-6 border-left border-top">
-                <h3>Guides</h3>
+                <h3 class="text-center">Guides</h3>
                 <div class= "guide">
                     <div class="card mb-3">
                         <div class="card-body">
@@ -201,7 +214,6 @@
                         <iframe width="100%" height="300px" src="https://www.youtube.com/embed/F-nQ_KJgfCY"></iframe>
                             <h5 class="card-title">Planks</h5>
                             <p class="card-text">Planks are an effective way to target both your abdominal muscles and your whole body. Planking stabilizes your core without straining your back the way situps or crunches might.</p>
-                            
                         </div>
                     </div>
 
@@ -212,9 +224,316 @@
         </div>
     </div>
     <div class="tab-pane fade" id="food" role="tabpanel" aria-labelledby="food-tab">
-        food
+        <input id="input" class="pac-target-input" placeholder="Enter address" />
+        <div id="map"></div>
+
+        <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
+        
     </div>
+    <div class="tab-pane fade" id="recipe" role="tabpanel" aria-labelledby="food-tab">
+        <div class="search pt-3">
+            <h3 class="text-center"> Search your recipe here </h3>
+                <form class="d-flex justify-content-center  col ml-auto footer-subscribe p-0 "> 
+                <div class="col-md-8">
+                    <input type="text" id="recipe-text" name="recipe" class="form-contro pac-target-input" id="search-text" placeholder="Search..." required="" autocomplete="off">
+                    <button type="button" id="search" class=" btn btn-theme bg-orange">Search
+                    </button>
+                        
+                </div>
+                </form>
+        </div>
+        
+        <div class="food-cont row mr-0"  >
+            
+        </div>
+    </div>
+    
 </div>
 
 {% endblock content %}
+
+{% block javascript %}
+<script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDio4Zj99JOhP8SBQBM3CydIsc91ld-Jbs&callback=initMap&libraries=localContext,places&v=beta" async></script>
+<script>
+    let map;
+    let localContextMapView;
+    const styles = [
+    {
+        elementType: "labels",
+        stylers: [
+        {
+            visibility: "on",
+        },
+        ],
+    },
+    {
+        elementType: "labels.icon",
+        stylers: [
+        {
+            visibility: "off",
+        },
+        ],
+    },
+    {
+        elementType: "labels.text.fill",
+        stylers: [
+        {
+            color: "#616161",
+        },
+        ],
+    },
+    {
+        elementType: "labels.text.stroke",
+        stylers: [
+        {
+            color: "#f5f5f5",
+        },
+        ],
+    },
+    {
+        featureType: "administrative.land_parcel",
+        stylers: [
+        {
+            visibility: "off",
+        },
+        ],
+    },
+    {
+        featureType: "administrative.land_parcel",
+        elementType: "labels.text.fill",
+        stylers: [
+        {
+            color: "#bdbdbd",
+        },
+        ],
+    },
+    {
+        featureType: "administrative.neighborhood",
+        stylers: [
+        {
+            visibility: "on",
+        },
+        ],
+    },
+    {
+        featureType: "poi",
+        elementType: "geometry",
+        stylers: [
+        {
+            color: "#eeeeee",
+        },
+        ],
+    },
+    {
+        featureType: "poi",
+        elementType: "labels.text.fill",
+        stylers: [
+        {
+            color: "#757575",
+        },
+        ],
+    },
+    {
+        featureType: "poi.park",
+        elementType: "geometry",
+        stylers: [
+        {
+            color: "#e5e5e5",
+        },
+        ],
+    },
+    {
+        featureType: "poi.park",
+        elementType: "labels.text.fill",
+        stylers: [
+        {
+            color: "#9e9e9e",
+        },
+        ],
+    },
+    {
+        featureType: "road",
+        elementType: "geometry",
+        stylers: [
+        {
+            color: "#ffffff",
+        },
+        ],
+    },
+    {
+        featureType: "road.arterial",
+        elementType: "labels.text.fill",
+        stylers: [
+        {
+            color: "#757575",
+        },
+        ],
+    },
+    {
+        featureType: "road.highway",
+        elementType: "geometry",
+        stylers: [
+        {
+            color: "#dadada",
+        },
+        ],
+    },
+    {
+        featureType: "road.highway",
+        elementType: "labels.text.fill",
+        stylers: [
+        {
+            color: "#616161",
+        },
+        ],
+    },
+    {
+        featureType: "road.local",
+        elementType: "labels.text.fill",
+        stylers: [
+        {
+            color: "#9e9e9e",
+        },
+        ],
+    },
+    {
+        featureType: "transit.line",
+        elementType: "geometry",
+        stylers: [
+        {
+            color: "#e5e5e5",
+        },
+        ],
+    },
+    {
+        featureType: "transit.station",
+        elementType: "geometry",
+        stylers: [
+        {
+            color: "#eeeeee",
+        },
+        ],
+    },
+    {
+        featureType: "water",
+        elementType: "geometry",
+        stylers: [
+        {
+            color: "#c9c9c9",
+        },
+        ],
+    },
+    {
+        featureType: "water",
+        elementType: "labels.text.fill",
+        stylers: [
+        {
+            color: "#9e9e9e",
+        },
+        ],
+    },
+    ];
+
+    function initMap() {
+    localContextMapView = new google.maps.localContext.LocalContextMapView({
+        element: document.getElementById("map"),
+        placeTypePreferences: [
+        { type: "restaurant", weight: 2 },
+        ],
+        maxPlaceCount: 24,
+    });
+    map = localContextMapView.map;
+    map.setOptions({
+        center: { lat: 51.507307, lng: -0.08114 },
+        zoom: 16,
+        styles,
+    });
+    // Build and add the Autocomplete search bar
+    const input = document.getElementById("input");
+    const options = {
+    };
+    const autocomplete = new google.maps.places.Autocomplete(input, options);
+    autocomplete.setFields(["address_components", "geometry", "name"]);
+    autocomplete.addListener("place_changed", () => {
+        const place = autocomplete.getPlace();
+
+        if (!place || !place.geometry) {
+        // User entered the name of a Place that was not suggested and
+        // pressed the Enter key, or the Place Details request failed.
+        window.alert("No address available for that input.");
+        return;
+        }
+        // Recenter the map to the selected address
+        map.setOptions({
+        center: place.geometry.location,
+        zoom: 16,
+        });
+        // Update the localContext directionsOptions origin
+        localContextMapView.directionsOptions = {
+        origin: place.geometry.location,
+        };
+        new google.maps.Marker({
+        position: place.geometry.location,
+        map: map,
+        icon:
+            "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAbUlEQVR4Ae3LoQ2AMAAF0TMYPJoV2IApGIJtmIMtmIAVqutraj6IiqZpmyYoCO/08R7bXbOOHSF2Ohr0HCh00EPdwImiTgYqRgxKMowUTFiUyTKRMeNQIcdMYsGjSp6FyIoaWkmoUuLxEPzDh1xIaLFFuTyHMgAAAABJRU5ErkJggg==",
+        zIndex: 30,
+        });
+        // update the results with new places
+        localContextMapView.search();
+    });
+    }
+</script>
+<script>
+$(document).on("keydown", "form", function(event) { 
+    return event.key != "Enter";
+});
+
+let searchButton = document.querySelector("#search")
+
+searchButton.addEventListener("click", ()=>{
+    console.log("button")
+    food = $("#recipe-text").val()
+    console.log(food)
+    sendApiRequest(food)
+})
+
+async function sendApiRequest(food){
+    console.log(food)
+    let API_ID = "7412288b"
+    let API_KEY = "d94008edf981e98d14bed2c7c77a22c6"
+    let response = await fetch(`https://api.edamam.com/search?app_id=${API_ID}&app_key=${API_KEY}&q=${food}`);
+    let data = await response.json()
+    console.log(data)
+    useApiData(data)
+}
+
+function useApiData(data){
+    var i;
+    console.log("button")
+    if (data.hits.length > 0){
+        for(i = 0; i< data.hits.length; i++ ){
+        $(".food-cont").append(
+        `<div class="col-md-4">
+            <div class="card">
+                <img class="card-img-top" src="${data.hits[i].recipe.image}" alt="${data.hits[i].recipe.label}">
+                <div class="card-body">
+                    <h5 class="card-title">${data.hits[i].recipe.label}</h5>
+                    <p class="card-text">Source: ${data.hits[i].recipe.source}</p>
+                    <a href="${data.hits[i].recipe.url}" target="_blank" class="btn btn-primary">Check it out</a>
+                </div>
+            </div>
+        </div>`
+        );
+        }
+    }
+    else {
+        alert("No recipe found")
+    }
+    
+}
+</script>
+
+{% endblock javascript %}
 
