@@ -21,6 +21,12 @@ from .utils import Calendar
 
 from django.contrib.auth.forms import UserCreationForm
 
+def homeView(request):
+    if request.user.is_authenticated:
+        return redirect("manCal:index")
+    return render(request, 'home.html')
+
+
 def loginView(request):
     # Get username and password from request
     username = request.POST['username']
@@ -41,7 +47,7 @@ def loginView(request):
             'loggedin': True
         }
 
-        response = render(request, 'news/index.html', context)
+        response = render(request, 'index.html', context)
 
         # Remember last login in cookie
         now = D.datetime.utcnow()
@@ -162,6 +168,22 @@ class EventEdit(LoginRequiredMixin, generic.UpdateView):
     model = Event
     fields = ['title', 'description', 'start_time', 'end_time', 'location']
     template_name = 'event.html'
+
+
+
+
+class EventDelete(LoginRequiredMixin, generic.DeleteView):
+    model = Event
+    template_name = 'event_delete.html'
+    success_url = reverse_lazy('manCal:calendar')
+    
+    def post(self, request, *args, **kwargs):
+        if "cancel" in request.POST:
+            return redirect('manCal:calendar')
+        else:
+            return super(EventDelete, self).post(request, *args, **kwargs)
+
+
 
 @login_required
 def event_details(request, event_id):
@@ -305,6 +327,12 @@ class EventMemberDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = EventMember
     template_name = 'event_delete.html'
     success_url = reverse_lazy('manCal:calendar')
+
+    def post(self, request, *args, **kwargs):
+        if "cancel" in request.POST:
+            return redirect('manCal:calendar')
+        else:
+            return super(EventMemberDeleteView, self).post(request, *args, **kwargs)
 
 @login_required
 def file_delete(request, file_id, event_id):
