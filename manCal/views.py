@@ -169,6 +169,22 @@ class EventEdit(LoginRequiredMixin, generic.UpdateView):
     fields = ['title', 'description', 'start_time', 'end_time', 'location']
     template_name = 'event.html'
 
+
+
+
+class EventDelete(LoginRequiredMixin, generic.DeleteView):
+    model = Event
+    template_name = 'event_delete.html'
+    success_url = reverse_lazy('manCal:calendar')
+    
+    def post(self, request, *args, **kwargs):
+        if "cancel" in request.POST:
+            return redirect('manCal:calendar')
+        else:
+            return super(EventDelete, self).post(request, *args, **kwargs)
+
+
+
 @login_required
 def event_details(request, event_id):
     event = Event.objects.get(id=event_id)
@@ -311,6 +327,12 @@ class EventMemberDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = EventMember
     template_name = 'event_delete.html'
     success_url = reverse_lazy('manCal:calendar')
+
+    def post(self, request, *args, **kwargs):
+        if "cancel" in request.POST:
+            return redirect('manCal:calendar')
+        else:
+            return super(EventMemberDeleteView, self).post(request, *args, **kwargs)
 
 @login_required
 def file_delete(request, file_id, event_id):
