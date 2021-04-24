@@ -34,7 +34,6 @@ class Calendar(HTMLCalendar):
 			for event in eventsAll:
 				if event.start_time <= combined_start and event.end_time >= combined_end:
 					d += f'<li> {event.get_html_url} </li>'	
-			print(d)
 			return f"<td><span class='date'>{day}</span><ul> {d} </ul></td>"
 		return '<td></td>'
 

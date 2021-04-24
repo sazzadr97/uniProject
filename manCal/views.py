@@ -9,7 +9,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views import generic
 from django.utils.safestring import mark_safe
-from datetime import timedelta
+from datetime import timedelta, date
 import calendar
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -21,9 +21,36 @@ from .utils import Calendar
 
 from django.contrib.auth.forms import UserCreationForm
 
+@login_required
+def indexView(request):
+
+    user = CustomUser.objects.get(username= request.user)
+    today = datetime.today()
+    start_time = today.replace(hour=23, minute=59)
+    end_time = today.replace(hour=00, minute=1)
+    events = Event.objects.filter(user = user)
+    notes = Notes.objects.filter(user=user)
+    events_today = []
+    for event in events:
+        if event.start_time <= start_time and event.end_time >= end_time:
+            event_today = {
+                'event_id' : event.id,
+                'start_time': event.start_time,
+                'end_time' : event.end_time,
+                'content' : event.description,
+                'title': event.title 
+            }
+            events_today.append(event_today) 
+    context = {
+        'events_today' : events_today,
+        'notes' : notes
+    }
+    return render(request, "index.html", context)
+
+@login_required
 def homeView(request):
     if request.user.is_authenticated:
-        return redirect("manCal:index")
+         return redirect("manCal:index")
     return render(request, 'home.html')
 
 
@@ -77,15 +104,12 @@ def signUpView(request):
             return redirect("/login")
         else:
             print('failed after falidation')
-            print (form.errors)
     else:
         form = signUpForm()
     
     return render(request, "signup.html", {"form": form})
 
-@login_required
-def indexView(request):
-    return render(request, "index.html")
+
 
 @login_required
 def profileView(request):
@@ -104,6 +128,7 @@ def profileView(request):
     context = {
         
     }
+
     return render(request, "profile.html", context)
 
 def get_date(req_day):
@@ -395,7 +420,6 @@ def healthView(request):
 @login_required
 def addExercise(request):
     if request.method == 'POST':
-        print(request.POST)
         user = CustomUser.objects.get(username= request.user)
         lunges_set = int(request.POST.get('Lunges_set'))
         lunges_rep = int(request.POST.get('Lunges_rep'))
@@ -408,7 +432,6 @@ def addExercise(request):
         planks_set = int(request.POST.get('Planks_set'))
         planks_rep = int(request.POST.get('Planks_rep'))
         if not Exercise.objects.filter(user= user).exists():
-            print('creation')
             Exercise.objects.create(
                 user= user,
                 Lunges_set = lunges_set,
@@ -424,7 +447,6 @@ def addExercise(request):
             )
             return redirect("manCal:health")
         else:
-            print('update')
             exercise = Exercise.objects.get(user= user)
             exercise.Lunges_set = lunges_set
             exercise.Lunges_rep = lunges_rep

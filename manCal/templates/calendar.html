@@ -1,5 +1,19 @@
 {% extends 'base.html' %}
 
+{%block mycss%}
+<style>
+.list-group-item{
+    border-bottom-right-radius: 0px;
+    border-bottom-left-radius: 0px;
+}
+@media only screen and (min-width: 1000px){
+    .notes-conteiner{
+        height: 93vh;
+    }
+}
+
+</style>
+{%endblock%}
 {% block content %}
 
 <!-- Button trigger modal -->
@@ -15,9 +29,9 @@
             <ul class="list-group">
             {% for note in notes %}
             <div class= "inline">
-                <li class="list-group-item">
+                <li class="border border-dark rounded">
 
-                    <a class="btn btn-info center mr-2" href="{% url 'manCal:note_delete' note.id %}"> X </a>
+                    <a class="btn center mr-2" href="{% url 'manCal:note_delete' note.id %}"> X </a>
                     {{note.note}}
                 </li>    
             </div>
