@@ -1,7 +1,111 @@
 {% extends "base.html" %}
+{% block mycss %}
+<style>
+    .row{
+        margin-right: 0px;
+        margin-left: 0px;
+        height: 10vh;
+    }
+    .event-content{
+        overflow-y: auto;
+        text-align: left;
+    }
+    .date{
+        font-size: 14px;
+    }
+    .container_index {
+    display: grid;
+    height: 93vh;
+    width: 100%;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1.5fr 1.2fr;
+    grid-template-areas:
+        "main main content1"
+        "main main  content2";
+    grid-gap: 0.2rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    font-size: 12px;
+    color: #004d40;
+    text-align: center;
+    }
 
+
+    main {
+    background: #84ffff;
+    grid-area: main;
+    border-radius: var(--main-radius);
+    padding-top: var(--main-padding);
+    overflow-y: auto;
+    }
+
+    #content1 {
+    background: #6fffd2;
+    grid-area: content1;
+    border-radius: var(--main-radius);
+    padding-top: var(--main-padding);
+    overflow-y: auto;
+    }
+
+    #content2 {
+    background: #64ffda;
+    grid-area: content2;
+    border-radius: var(--main-radius);
+    padding-top: var(--main-padding);
+    overflow-y: auto;
+    }
+
+
+
+    @media only screen and (max-width: 550px) {
+    .container_index {
+        grid-template-columns: 1fr;
+        grid-template-rows: 2.2fr 1.2fr 1.2fr  ;
+        grid-template-areas:
+        "main"
+        "content1"
+        "content2"
+    }
+    }
+
+
+</style>
+{% endblock mycss%}
 {% block content %}
 
-    <p>Home</p>
+
+<div class="container_index">
+    <main>
+        <h4>Days Activity</h4>
+        <div class="events">
+        {%for event in events_today%}
+            <a href='{% url 'manCal:event-detail' event.event_id %}'>
+                <div class="row border-top border-bottom border-dark">
+                    <div class="date col-3">
+                    {{event.start_time|date:"d M, Y"}}<br>
+                    {{event.end_time|date:"d M, Y"}}
+                    </div>
+                    <div class="event-content col-9">
+                    {{event.title}}<br>
+                    {{event.content}}
+                    </div>
+                </div>
+            </a>
+        {%endfor%}
+        </div>
+    </main>
+    <div id="content1">
+    <h4>Memo</h3>
+    {%for note in notes%}
+    {{note.note}}<br>
+    {%endfor%}
+    </div>
+    
+    <div id="content2">
+    <h4>Suggestion</h4>
+    No suggestion available
+    </div>
+</div>
+
     
 {% endblock content %}
