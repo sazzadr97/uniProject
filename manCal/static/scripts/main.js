@@ -1,4 +1,6 @@
 
+
+
 $("#favCategoriesSubmit").click(function(){
     $.ajax({
         type: 'DELETE',
@@ -25,7 +27,7 @@ $("#favCategoriesSubmit").click(function(){
             alert("Errorr");
         }
     })
-    preventDefault();
+    
 })
 
 $('#img_file').change(function(){

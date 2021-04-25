@@ -1,23 +1,21 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
-from django.http import HttpResponse, Http404
 from django.contrib.auth.decorators import login_required
 from .forms import signUpForm, EventForm, AddMemberForm, AddLocation
 import requests
 from datetime import datetime, date
-from django.shortcuts import render, redirect
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse, Http404
 from django.views import generic
 from django.utils.safestring import mark_safe
 from datetime import timedelta, date
 import calendar
-from django.shortcuts import get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.core.files.storage import FileSystemStorage
 from django.contrib import messages
 from .models import *
 from .utils import Calendar
+from django.forms.models import model_to_dict
 
 from django.contrib.auth.forms import UserCreationForm
 
@@ -390,18 +388,29 @@ def add_note(request):
     user = CustomUser.objects.get(username= request.user)
     note = request.POST.get('note')
     if request.method == 'POST':
-        Notes.objects.create(
+        new_note = Notes.objects.create(
             user = user,
             note = note
         )
+        print(new_note)
+    return JsonResponse({'note' : model_to_dict(new_note)}, status=200)
 
-    return redirect('manCal:calendar', )
+@login_required
+def note_complited(request, note_id):
+    note = Notes.objects.get(id=note_id)
+    if note.complited == True:
+        note.complited = False
+    elif note.complited == False:
+        note.complited = True
+    note.save()
+    return JsonResponse({'note' : model_to_dict(note)}, status=200)
+
 
 @login_required
 def note_delete(request, note_id):
     note= Notes.objects.get(id= note_id)
     note.delete()
-    return redirect('manCal:calendar')
+    return JsonResponse({'result' : 'ok'}, status=200)
 
 
 @login_required

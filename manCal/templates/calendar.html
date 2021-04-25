@@ -2,15 +2,101 @@
 
 {%block mycss%}
 <style>
-.list-group-item{
-    border-bottom-right-radius: 0px;
-    border-bottom-left-radius: 0px;
-}
-@media only screen and (min-width: 1000px){
-    .notes-conteiner{
-        height: 93vh;
+    .list-group-item{
+        border-bottom-right-radius: 0px;
+        border-bottom-left-radius: 0px;
     }
-}
+    @media only screen and (min-width: 1000px){
+        .notes-conteiner{
+            height: 93vh;
+        }
+    }
+
+    .card-body{
+        padding: 10px;
+    }
+
+    .calendar{
+        color: black;
+    }
+    .calendar tr, .calendar td {
+        border: 1px solid black;
+    }
+    
+    .calendar th {
+        padding: 10px;
+        text-align: center;
+        font-size: 18px;
+    }
+    
+    .calendar td {
+        width: 200px;
+        height: 150px;
+        padding: 20px 0px 0px 5px;
+    }
+    
+    .month {
+        font-size: 25px;
+    }
+    
+    .date {
+        font-size: 16px;
+    }
+    
+    ul {
+        height: 100%;
+        padding: 0px 5px 0px 0px;
+    }
+    
+    a {
+        color: #17a2b8;
+    }
+
+    .left {
+        float: left;
+    }
+    
+    .right {
+        float: right;
+    }
+    
+    .btn {
+        outline: none;
+        color: black;
+        background-color: transparent;
+        box-shadow: 0 0 0 0;
+    }
+    
+    .clearfix {
+        margin: 15px;
+    }
+
+    .form {
+        margin: auto;
+    }
+    
+    .form input, .form select, .form textarea {
+        border-radius: 5px;
+        border: 1px solid #17a2b8;
+        outline: none;
+        background: none;
+        padding: 5px;
+        width: 100%;
+    }
+
+    .calendar-content li {
+        background-color: lightblue;
+        margin-bottom: 5px;
+        border-radius: 5px;
+        
+    }
+    .calendar a {
+        margin-left: 3px;
+        margin-left: 3px;
+        font-size: medium;
+        color: black;
+    }
+    
 
 </style>
 {%endblock%}
@@ -20,23 +106,24 @@
     <div class="conteiner_cal mt-2">
         <div class="notes-conteiner float-right col-lg-3 col-md-12 ">
             <h1> Notes </h1>
-            <form class="form-inline" method="POST" action= {% url 'manCal:add_note' %}>
+            <form class="form-inline" id="createNoteForm" method="POST" data-url= {% url 'manCal:add_note' %}>
                 {% csrf_token %}
                     <input type="text" class="form-control mb-2 mr-sm-2 col-10 col-lg-8" id="note" placeholder="Write your note here" name = "note" required>
 
-                <button type="submit" class="btn btn-primary mb-2">Add...</button>
+                <button type="button" id="createNoteButton" class="btn btn-primary mb-2">Add...</button>
             </form>
-            <ul class="list-group">
+            <div id="noteList">
             {% for note in notes %}
-            <div class= "inline">
-                <li class="border border-dark rounded">
-
-                    <a class="btn center mr-2" href="{% url 'manCal:note_delete' note.id %}"> X </a>
-                    {{note.note}}
-                </li>    
-            </div>
+                <div class= "card mb-1" id="noteCard" data-id="{{note.id}}" style="{% if note.complited%} text-decoration: line-through {%endif%}">
+                    <div class="card-body">
+                        {{note.note}}
+                        <button type="button" class="close float-right" data-id="{{note.id}}">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>    
+                </div>
             {% endfor %}
-            </ul>
+            </div>
         </div>
         <div class="calendar-content float-left col-md-12 col-lg-9 border-right">
             <div class="clearfix">
@@ -50,4 +137,69 @@
         </div>
     </div>
 
+{% endblock %}
+{% block javascript%}
+<script>
+$(document).ready(function(){
+    $("#createNoteButton").click(function() {
+        
+        var serializedData = $("#createNoteForm").serialize();
+        console.log(serializedData);
+        $.ajax({
+            url: $("#createNoteForm").data('url'),
+            data: serializedData,
+            type: 'post',
+            success: function(response) {
+                $("#noteList").append('<div class= "card mb-1" id="noteCard" data-id="'+ response.note.id +'"><div class="card-body">' +response.note.note+ '<button type="button" class="close float-right" data-id="'+ response.note.id +'"><span aria-hidden="true">&times;</span></button></div></div>')
+
+            }
+        })
+        $("#createNoteForm")[0].reset();
+    });
+
+    $("#noteList").on('click', '.card', function() {
+        var dataId = $(this).data('id');
+        console.log(dataId);
+        $.ajax({
+            url: '/note/'+ dataId +'/complited/',
+            data: {
+                id: dataId
+            },
+            type: 'post',
+            success: function(response) {
+                console.log(response.note.complited)
+                if (response.note.complited == true){
+                    var cardItem = $('#noteCard[data-id="'+ dataId +'"]');
+                    cardItem.css('text-decoration', 'line-through').hide().slideDown();
+                    $("#noteList").append(cardItem); 
+                }
+                else if (response.note.complited == false){
+                    var cardItem = $('#noteCard[data-id="'+ dataId +'"]');
+                    cardItem.css('text-decoration', 'none');
+                    $("#noteList").append(cardItem);
+                }
+                
+            }
+        })
+
+    }).on('click', 'button.close', function (event) {
+        event.stopPropagation();
+        console.log("delete");
+        var dataId = $(this).data('id');
+        console.log(dataId);
+        $.ajax({
+            url: '/note/'+ dataId +'/note_delete/',
+            data: {
+                id: dataId
+            },
+            type: 'post',
+            dataType: 'json',
+            success: function() {
+                $('#noteCard[data-id="'+ dataId +'"]').remove();
+            }
+        })
+
+    });
+});
+</script>
 {% endblock %}

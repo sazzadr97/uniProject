@@ -44,6 +44,7 @@
     grid-area: content1;
     border-radius: var(--main-radius);
     padding-top: var(--main-padding);
+    font-size: 14px;
     overflow-y: auto;
     }
 
@@ -52,6 +53,7 @@
     grid-area: content2;
     border-radius: var(--main-radius);
     padding-top: var(--main-padding);
+    font-size: 14px;
     overflow-y: auto;
     }
 
@@ -77,10 +79,10 @@
 <div class="container_index">
     <main>
         <h4>Days Activity</h4>
-        <div class="events">
+        <div class="events border-top border-dark">
         {%for event in events_today%}
             <a href='{% url 'manCal:event-detail' event.event_id %}'>
-                <div class="row border-top border-bottom border-dark">
+                <div class="row border-bottom border-dark mt-2">
                     <div class="date col-3">
                     {{event.start_time|date:"d M, Y"}}<br>
                     {{event.end_time|date:"d M, Y"}}
@@ -103,7 +105,7 @@
     
     <div id="content2">
     <h4>Suggestion</h4>
-    No suggestion available
+    Coming soon
     </div>
 </div>
 
