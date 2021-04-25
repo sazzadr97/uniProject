@@ -251,36 +251,58 @@ def weatherView(request):
     user = CustomUser.objects.get(username= request.user)
     API_KEY = 'AIzaSyDio4Zj99JOhP8SBQBM3CydIsc91ld-Jbs'
     base_url = 'https://maps.googleapis.com/maps/api/geocode/json?'
-    err_msg=''
-    message= ''
-    message_class=''
 
     if request.method == 'POST':
         location = request.POST.get('location')
         cityCount = Locations.objects.filter(user=user).filter(location = location).count()
         form = AddLocation(request.POST)
-        print(location)
+
         if form.is_valid():
+            print("valid form")
             if cityCount == 0:
+                print("city dont exist in database")
                 params = {
                 'key' : API_KEY,
                 'address': location
                 }
                 response_test = requests.get(base_url, params=params).json()
                 if response_test['status'] == 'OK':
+                    print("city geocord found")
                     obj= form.save(commit=False)
                     obj.user = user
                     obj.save()
-                    messages.success(request,"Location add.")
-                    return redirect('manCal:weather')
+                    paramsWeather = {
+                        'key' : API_KEY,
+                        'address': obj.location
+                    }
+                    response = requests.get(base_url, params=paramsWeather).json()
+                    if response['status'] == 'OK':
+                        print("weather data available")
+                        geometry = response['results'][0]['geometry']
+                        
+                        #check if lat and lgn are obtained correctly
+                        lat = geometry['location']['lat']
+                        lon = geometry['location']['lng']
 
+                        r = requests.get(url.format(lat=lat, lon=lon)).json()
+                        city_weather = {
+                            
+                            'location_id' : obj.id,
+                            'city' : obj.location,
+                            'temperature' : round(r['current']['temp']),
+                            'main' : r['daily'][0]['weather'][0]['main'],
+                            'icon' : r['daily'][0]['weather'][0]['icon'],
+                            'tempMax' : round(r['daily'][0]['temp']['max']),
+                            'tempMin' : round(r['daily'][0]['temp']['min']),
+                        }
+
+                        print(city_weather)
+                        return JsonResponse({'city_weather' : city_weather, 'errorCode' : "200"}, status= 200)  
                 else:
-                    messages.warning(request, "Location not found" )
-                    return redirect('manCal:weather')
-            if cityCount > 0:
-                messages.warning(request, "Location already added" )
-                return redirect('manCal:weather')   
-        return redirect('manCal:weather')
+                    return JsonResponse({'error' : "Location not found", 'errorCode' : "500"}, status= 200)
+            elif cityCount > 0:
+                return JsonResponse({'error' : "Location already added", 'errorCode' : "500"}, status= 200)   
+        return JsonResponse({'error' : "Invalid input", 'errorCode' : "500"}, status= 200)
 
     form = AddLocation()
     cities = Locations.objects.filter(user=user)
@@ -367,7 +389,7 @@ def file_delete(request, file_id, event_id):
 def location_delete(request, location_id):
     location = Locations.objects.get(id = location_id)
     location.delete()
-    return redirect('manCal:weather')
+    return JsonResponse({'result' : 'ok'}, status=200)
 
 @login_required
 def add_files(request):

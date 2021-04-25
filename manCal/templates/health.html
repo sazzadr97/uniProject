@@ -5,7 +5,7 @@
 <style>
     
     .nav-tabs {
-        background-color: #5ec6ea;
+        background-color: #ddd;
     }
     .slide-cont {
         background-color: black;
@@ -22,6 +22,115 @@
     .card {
         margin : 2px;
         margin-top: 15px;
+    }
+    
+
+
+
+    .title {
+    justify-content: center;
+    position: absolute;
+    left: 50%;
+    -webkit-transform: translateX(-50%);
+    transform: translateX(-50%)
+    }
+
+    .title p {
+    margin-bottom: 0.2rem;
+    font-size: 1.2rem;
+    overflow: hidden;
+    max-height: 30px;
+    max-width: 100%;
+    text-overflow: ellipsis;
+    }
+
+
+    .title p:hover {
+    overflow: visible;
+    }
+
+    .temp {
+    font-size: 2.6rem;
+    margin-bottom: 1rem;
+    margin-top: 1rem;
+    }
+
+
+
+
+    .icon {
+    align-self: flex-end;
+    margin-right: -2.5rem;
+    margin-top: -2rem;
+    z-index: 999
+    }
+
+
+
+
+
+    /* button */
+
+    .search_bar{
+    background-color: black;
+    }
+
+    .footer-subscribe input[type=text] {
+    border: 1px solid #000000;
+    border-radius: 55px;
+    font-size: 12px;
+    padding: 12px 40% 12px 20px;
+    margin-bottom: 5px;
+    background: #dae0e5;
+    width: 100%;
+    box-shadow: none !important;
+    }
+
+    a,
+    button[type="submit"],
+    input[type=text] {
+    color: black;
+    text-decoration: none;
+    -webkit-transition: all 400ms ease-in-out;
+    -moz-transition: all 400ms ease-in-out;
+    -o-transition: all 400ms ease-in-out;
+    -ms-transition: all 400ms ease-in-out;
+    transition: all 400ms ease-in-out
+    }
+
+    .footer-subscribe .btn-theme {
+    position: absolute;
+    top: 0;
+    height: 90%;
+    right: 12px;
+    }
+
+    .btn-theme:hover {
+    box-shadow: none
+    }
+
+    .btn-theme {
+    color: black !important;
+    padding: 0.5rem 1.9rem;
+    font-weight: 400;
+    font-size: 0.875rem;
+    display: inline-block;
+    display: inline-flex;
+    outline: none;
+    border: none;
+    cursor: pointer;
+    overflow: hidden;
+    z-index: 2;
+    align-items: center;
+    position: relative;
+    cursor: pointer;
+    -webkit-box-shadow: 0px 14px 47px 0px rgba(28, 28, 28, 0.24);
+    -moz-box-shadow: 0px 14px 47px 0px rgba(28, 28, 28, 0.24);
+    box-shadow: 0px 14px 47px 0px rgba(28, 28, 28, 0.24);
+    -webkit-border-radius: 70px;
+    -moz-border-radius: 70px;
+    border-radius: 70px
+    background-color: azure;
     }
 
 </style>
@@ -224,7 +333,7 @@
         </div>
     </div>
     <div class="tab-pane fade" id="food" role="tabpanel" aria-labelledby="food-tab">
-        <input id="input" class="pac-target-input" placeholder="Enter address" />
+        <input id="input" class="pac-target-input form-control mt-4 mb-3" placeholder="Enter address" />
         <div id="map"></div>
 
         <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
