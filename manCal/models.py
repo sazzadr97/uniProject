@@ -47,9 +47,12 @@ class EventFiles(models.Model):
 class Notes(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     note = models.TextField()
+    complited = models.BooleanField(default=False)
 
     def __str__(self):
         return str(self.note)
+    class Meta:
+        ordering = ['complited', 'id']
 
 class Locations(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
