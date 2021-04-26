@@ -7,6 +7,42 @@ ul, li{
   width: 100%;
   
 }
+.form {
+  margin: auto;
+}
 
+.form input, .form select, .form textarea {
+  border-radius: 5px;
+  border: 1px solid #17a2b8;
+  outline: none;
+  background: none;
+  padding: 5px;
+  width: 100%;
+}
+button {
+  padding: 3px;
+}
 
+a,
+button[type="submit"],
+input[type=text] {
+  color: black;
+  text-decoration: none;
+  -webkit-transition: all 400ms ease-in-out;
+  -moz-transition: all 400ms ease-in-out;
+  -o-transition: all 400ms ease-in-out;
+  -ms-transition: all 400ms ease-in-out;
+  transition: all 400ms ease-in-out
+}
+
+.footer-subscribe .btn-theme {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  right: 0
+}
+
+.btn-theme:hover {
+  box-shadow: none
+}
 

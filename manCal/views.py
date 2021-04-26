@@ -368,22 +368,18 @@ def add_eventmember(request, event_id):
     return render(request, 'add_member.html', context)
 
 
-class EventMemberDeleteView(LoginRequiredMixin, generic.DeleteView):
-    model = EventMember
-    template_name = 'event_delete.html'
-    success_url = reverse_lazy('manCal:calendar')
+@login_required
+def member_delete(request, member_id):
+    member = EventMember.objects.get(id= member_id)
+    member.delete()
+    return JsonResponse({'result' : 'ok'}, status=200)
 
-    def post(self, request, *args, **kwargs):
-        if "cancel" in request.POST:
-            return redirect('manCal:calendar')
-        else:
-            return super(EventMemberDeleteView, self).post(request, *args, **kwargs)
 
 @login_required
-def file_delete(request, file_id, event_id):
+def file_delete(request, file_id):
     file = EventFiles.objects.get(id = file_id)
     file.delete()
-    return redirect('manCal:event-detail', event_id = event_id,)
+    return JsonResponse({'result' : 'ok'}, status=200)
 
 @login_required
 def location_delete(request, location_id):

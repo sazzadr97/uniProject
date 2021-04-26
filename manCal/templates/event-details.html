@@ -8,19 +8,19 @@ Event Details
     <div class="container">
         <div class="clearfix">
             <a class="btn btn-primary left" href="{% url 'manCal:calendar' %}"> Calendar </a>
-            <a class="btn btn-info right mr-2" href="{% url 'manCal:event_delete' event.pk %}"> Delete Event </a>
-            <a class="btn btn-info right mr-2" href="{% url 'manCal:event_edit' event.pk %}"> Edit Event </a>
+            <a class="btn btn-info right m-2" href="{% url 'manCal:event_delete' event.pk %}"> Delete Event </a>
+            <a class="btn btn-info right m-2" href="{% url 'manCal:event_edit' event.pk %}"> Edit Event </a>
         </div>
         
-        <div class="clearfix">
+        <div class="clearfix event_content" data-id="{{event.id}}" >
             <h3>Event Name: {{ event.title }}</h3>
             <p>From <span style="color: gray;">{{ event.start_time }}</span> To <span style="color: gray;">{{ event.end_time }}</span></p>
-            <hr>
+            <h5>Desctiption:</h5>
             <p>{{ event.description }}</p>
-            <p>Location:</p> 
+            <h5>Location:</h5> 
+
             <p id="address">{{event.location}}</p>
-            <input type="hidden" name="lat" value="{{lat}}">
-            <input type="hidden" name="lon" value="{{lon}}">
+
         </div>
         <hr>
         {% comment %} tab navbar {% endcomment %}
@@ -84,8 +84,9 @@ Event Details
                         </tr>
                     </thead>
                     <tbody>
+                        <div id="fileList">
                         {% for file in eventfiles %}
-                        <tr role="row">
+                        <tr role="row" id="fileRow" data-id={{file.id}}>
                             <td>{{ file.files.name }}</td>
                             <td>
                                 <a href="{{file.files.url}}" class = "btn btn-outline-primary"  target="_black">View File</a>
@@ -94,10 +95,11 @@ Event Details
                                 <a href="{{file.files.url}}" download class = "btn btn-outline-primary">Download File</a>
                             </td>
                             <td>
-                                <a class="btn btn-danger" href="{% url 'manCal:remove_file' file.id file.event.id %}">Remove</a>
+                                <a class="btn btn-danger delete-file" data-id={{file.id}}>Remove</a>
                             </td>
                         </tr>
                         {% endfor %}
+                        </div>
                     </tbody>
                 </table>
 
@@ -120,17 +122,19 @@ Event Details
                         </tr>
                     </thead>
                     <tbody>
+                        <div id="memberList">
                         {% for member in eventmember %}
-                        <tr role="row">
+                        <tr role="row" id="memberRow" data-id={{member.id}}>
                             <td>{{ forloop.counter }}</td>
                             <td>{{ member.user.first_name }} {{ member.user.last_name }}</td>
                             <td>{{ member.user.username }}</td>
                             <td>{{ member.user.email }}</td>
                             <td>
-                                <a class="btn btn-danger" href="{% url 'manCal:remove_event' member.id %}">Remove</a>
+                                <a class="btn btn-danger delete-member" data-id={{member.id}} data-url="{% url 'manCal:remove_event' member.id %}">Remove</a>
                             </td>
                         </tr>
                         {% endfor %}
+                        </div>
                     </tbody>
                 </table>
             </div>
@@ -141,18 +145,59 @@ Event Details
 
 {% block javascript%}
     <script>
-            let map;
-            let marker;
-            function initMap() {
-                map = new google.maps.Map(document.getElementById("map"), {
-                    center: { lat: {{lat}}, lng: {{lon}}  },
-                    zoom: 18,
-                });
-                marker = new google.maps.Marker({
-                    position: { lat: {{lat}}, lng: {{lon}}  },
-                    map: map
+        let map;
+        let marker;
+        function initMap() {
+            map = new google.maps.Map(document.getElementById("map"), {
+                center: { lat: {{lat}}, lng: {{lon}}  },
+                zoom: 18,
+            });
+            marker = new google.maps.Marker({
+                position: { lat: {{lat}}, lng: {{lon}}  },
+                map: map
+            })
+        }
+    </script>
+    <script>
+        $(document).ready(function() {
+            $(".delete-file").click( function() {
+                var dataId = $(this).data('id');
+                console.log(dataId);
+                $.ajax({
+                    url: '/event/'+dataId+'/fileremove/',
+                    data: {
+                        id: dataId
+                    },
+                    type: 'post',
+                    success: function() {
+                        $('#fileRow[data-id="'+ dataId +'"]').remove();
+                    },
+                    error: function (error) {
+                        alert("Errror")
+                    }
                 })
-            }
+
+            });
+
+            $(".delete-member").click( function () {
+                var dataId = $(this).data('id');
+                console.log(dataId);
+                $.ajax({
+                    url: '/event/'+dataId+'/remove/',
+                    data: {
+                        id: dataId
+                    },
+                    type: 'post',
+                    success: function() {
+                        $('#memberRow[data-id="'+ dataId +'"]').remove();
+                    },
+                    error: function (error) {
+                        alert("Errror")
+                    }
+                })
+            });
+
+        });
     </script>
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDio4Zj99JOhP8SBQBM3CydIsc91ld-Jbs&callback=initMap"></script>
 
