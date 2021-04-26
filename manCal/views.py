@@ -45,7 +45,7 @@ def indexView(request):
     }
     return render(request, "index.html", context)
 
-@login_required
+
 def homeView(request):
     if request.user.is_authenticated:
          return redirect("manCal:index")
