@@ -116,7 +116,7 @@
             {% for note in notes %}
                 <div class= "card mb-1" id="noteCard" data-id="{{note.id}}" style="{% if note.complited%} text-decoration: line-through {%endif%}">
                     <div class="card-body">
-                        {{note.note}}
+                        <p>{{note.note}}</p>
                         <button type="button" class="close float-right" data-id="{{note.id}}">
                             <span aria-hidden="true">&times;</span>
                         </button>

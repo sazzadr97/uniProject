@@ -10,6 +10,24 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css">
         <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+        <style>
+            body {
+                
+                font-weight: 800;
+                text-transform: uppercase;
+                font-size: 14px;
+                color: black;
+            }
+            a{
+                color: black;
+            }
+            p{
+                font-size: 14px;
+                margin: 0px;
+                padding: 0px;
+                float: left;
+            }
+        </style>
         {% block mycss %} {% endblock mycss %}
     </head>
     <body>   
@@ -19,9 +37,9 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
             {% if user.is_authenticated %}
-                <li class="nav-item active">
+            <ul class="navbar-nav ">
+                <li class="nav-item ">
                     <a class="nav-link" href="{% url 'manCal:index' %}">Index</a>
                 </li>
                 <li class="nav-item">
@@ -39,15 +57,17 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'logout' %}">Logout</a>
                 </li>
+            </ul>
             {% else %}
+            <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'login' %}">Login</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'signup' %}">Sign up</a>
                 </li>
-            {% endif %}
             </ul>
+            {% endif %}
         </div>
         </nav>   
         
@@ -96,7 +116,6 @@
             });
 
         </script>
-
         {% block javascript %}
       
         {% endblock javascript %}

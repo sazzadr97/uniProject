@@ -145,8 +145,8 @@
     .footer-subscribe .btn-theme {
     position: absolute;
     top: 0;
-    height: 100%;
-    right: 0
+    height: 89%;
+    right: 0px;
     }
 
     .btn-theme:hover {
@@ -174,6 +174,7 @@
     -webkit-border-radius: 70px;
     -moz-border-radius: 70px;
     border-radius: 70px
+    background-color: azure;
     }
 
 
@@ -195,28 +196,26 @@
  {% endif %}
     
 <div class="weather">
-<div class="search pt-3">
-    <div class="serch_row h-100 d-flex justify-content-center align-items-center mt-1 mb-1 ">
-        <div class="col-md-8">
-            <form method= 'post' action= {% url 'manCal:weather' %} class="flex-nowrap col ml-auto footer-subscribe p-0 "> 
-            {% csrf_token %}
-                {{form.location}}
-                <button type="submit" class=" btn btn-theme bg-orange">Add
-                </button>
-                
-            </form>
+    <div class="search pt-3">
+        <div class="serch_row h-100 d-flex justify-content-center align-items-center mt-1 mb-1 ">
+            <div class="col-md-8">
+                <form method= 'post' id="createWeatherForm" data-url= {% url 'manCal:weather' %} class="flex-nowrap col ml-auto footer-subscribe p-0 "> 
+                {% csrf_token %}
+                    {{form.location}}
+                    <button type="button" id="createWeatherButton" class=" btn btn-theme bg-orange">Add
+                    </button>
+                    
+                </form>
+            </div>
         </div>
     </div>
-</div>
-    <div class="row mr-0">
+    <div class="row mr-0 " id="weatherList">
     {% for city_weather in weather_data %}
-        <div class="col-md-4">
-        <div class="card"> <span class="icon"><img src="http://openweathermap.org/img/w/{{ city_weather.icon }}.png"></span>
-            <span class="icon_del" >
-                <a href='{% url 'manCal:location_delete' city_weather.location_id %}'> 
+        <div class="col-md-4" id="weatherCard" data-id="{{city_weather.location_id}}">
+        <div class="card"  > <span class="icon"><img src="http://openweathermap.org/img/w/{{ city_weather.icon }}.png"></span>
+            <a class="icon_del" data-id="{{city_weather.location_id}}" >
                 <img src="https://img.icons8.com/ios-filled/50/000000/circled-x.png">
-                </a>
-            </span>
+            </a>
             <div class="title">
                 <p>{{city_weather.city}}</p>
             </div>
@@ -243,10 +242,9 @@
     
 {% endblock content %}
 {% block javascript%}
-  <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places&key=AIzaSyDio4Zj99JOhP8SBQBM3CydIsc91ld-Jbs"></script>
-  <script>
-  
-  var searchInput = 'search_input';
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places&key=AIzaSyDio4Zj99JOhP8SBQBM3CydIsc91ld-Jbs"></script>
+<script>
+    var searchInput = 'search_input';
 
     $(document).ready(function () {
         var autocomplete;
@@ -257,7 +255,46 @@
         google.maps.event.addListener(autocomplete, 'place_changed', function () {
             var near_place = autocomplete.getPlace();
         });
+
+        $("#weatherList").on('click', '.icon_del', function() {
+            var dataId = $(this).data('id');
+            $.ajax({
+                url: '/weather/'+ dataId +'/location_delete/',
+                data: {
+                    id: dataId
+                },
+                type: 'post',
+                dataType: 'json',
+                success: function() {
+                    $('#weatherCard[data-id="'+ dataId +'"]').remove();
+                }
+
+            })
+        });
+        $("#createWeatherButton").click(function () {
+            var serializedData = $("#createWeatherForm").serialize();
+            console.log(serializedData);
+             $.ajax({
+            url: $("#createWeatherForm").data('url'),
+            data: serializedData,
+            type: 'post',
+            success: function(response) {
+                console.log(response.errorCode)
+                if(response.errorCode == 200){
+                    $("#weatherList").append(
+                        '<div class="col-md-4" id="weatherCard" data-id="'+ response.city_weather.location_id +'"><div class="card"  > <span class="icon"><img src="http://openweathermap.org/img/w/'+ response.city_weather.icon +'.png"></span><a class="icon_del" data-id="'+ response.city_weather.location_id +'" ><img src="https://img.icons8.com/ios-filled/50/000000/circled-x.png"></a><div class="title"><p>'+response.city_weather.city+'</p></div><div class="temp">'+response.city_weather.temperature+'<sup>&deg;</sup></div><div class="row"><div class="col-4"><div class="header">General</div><div class="value">'+response.city_weather.main+'</div></div><div class="col-4"><div class="header">Min Temp</div><div class="value">'+response.city_weather.tempMin+'<sup>&deg;</sup></div></div><div class="col-4"><div class="header">Max Temp</div><div class="value">'+response.city_weather.tempMax+'<sup>&deg;</sup></div></div></div></div></div>'
+                    )
+                }
+                else if(response.errorCode == 500){
+                    alert(response.error);
+                }
+            }
+        })
+
+        })
     });
-  </script>
+</script>
+
+
 
 {% endblock %}
