@@ -3,6 +3,14 @@
 {% block title %}
 Event Details
 {% endblock %}
+{%block mycss%}
+<style>
+.filename{
+    overflow-x: auto;
+}
+</style>
+{%endblock%}
+
 
 {% block content %}
     <div class="container">
@@ -87,7 +95,7 @@ Event Details
                         <div id="fileList">
                         {% for file in eventfiles %}
                         <tr role="row" id="fileRow" data-id={{file.id}}>
-                            <td>{{ file.files.name }}</td>
+                            <td calss="filename">{{ file.files.name }}</td>
                             <td>
                                 <a href="{{file.files.url}}" class = "btn btn-outline-primary"  target="_black">View File</a>
                             </td>

@@ -229,9 +229,7 @@ def event_details(request, event_id):
         
         #check if lat and lgn are obtained correctly
         lat = geometry['location']['lat']
-        print(lat)
         lon = geometry['location']['lng']
-        print(lon)
 
     context = {
         'event': event,
