@@ -1,1 +1,1 @@
-web: python my_django_app/manage.py collectstatic --noinput ; gunicorn --bind 0.0.0.0:$PORT myProject.wsgi:application
+web: gunicorn myProject.wsgi 
