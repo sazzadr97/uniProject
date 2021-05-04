@@ -252,7 +252,7 @@
     var searchInput = 'search_input';
 
     $(document).ready(function () {
-        {% comment %} google autocomplite {% endcomment %}
+        //google autocomplite
         var autocomplete;
         autocomplete = new google.maps.places.Autocomplete((document.getElementById('search_input')), {
             types: ['geocode'],
@@ -261,7 +261,7 @@
         google.maps.event.addListener(autocomplete, 'place_changed', function () {
             var near_place = autocomplete.getPlace();
         });
-        {% comment %} listener and ajax to delete saved location {% endcomment %}
+        //listener and ajax to delete saved location
         $("#weatherList").on('click', '.icon_del', function() {
             var dataId = $(this).data('id');
             $.ajax({
@@ -277,7 +277,7 @@
 
             })
         });
-        {% comment %} listener on serch bar and cration of card for new location added {% endcomment %}
+        //listener on serch bar and cration of card for new location added
         $("#createWeatherButton").click(function () {
             var serializedData = $("#createWeatherForm").serialize();
             console.log(serializedData);

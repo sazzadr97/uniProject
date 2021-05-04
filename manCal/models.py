@@ -3,14 +3,14 @@ from django.urls import reverse
 from django.contrib.auth.models import AbstractUser
 from django.conf import settings
 
-"""  model used in the application """
-"""  creation of user model adding the email field """
+#model used in the application
+#creation of user model adding the email field
 class CustomUser(AbstractUser):
     email = models.EmailField()
 
 
 class Event(models.Model):
-    """ connecting the user and event model with user foreign key """
+    #connecting the user and event model with user foreign key
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
     description = models.TextField()
