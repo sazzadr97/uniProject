@@ -1,3 +1,5 @@
+Developemtn git repo: https://github.com/sazzadr97/uniProject
+
 Application can be found deployed on: https://smanageapp.herokuapp.com/
 
 If you want to run in local host follow the steps (on windows):
