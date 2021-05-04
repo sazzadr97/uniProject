@@ -3,7 +3,7 @@ from .models import *
 from .forms import signUpForm
 from django.contrib.auth.admin import UserAdmin
 
-
+""" list of table to be showen in the admin pannel """
 admin.site.register(CustomUser)
 admin.site.register(Event)
 admin.site.register(EventMember)

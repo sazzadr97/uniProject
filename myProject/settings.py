@@ -38,13 +38,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    #added crispy form and application to the project apps
     'crispy_forms',
     'manCal',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-
+    #whitenoice for static files serveing
     'whitenoise.middleware.WhiteNoiseMiddleware',
 
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -123,16 +124,20 @@ USE_TZ = False
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
+#static root for deployment
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'manCal/static'),
 ]
 
+#root for media file
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'manCal/static/media/')
 
+#authentification setting
 AUTH_USER_MODEL = 'manCal.CustomUser'
 
 LOGIN_URL = "login/"

@@ -138,6 +138,7 @@
 {% block content %}
 
 <div class = "slide-cont">
+{% comment %} BootStrap carousel {% endcomment %}
     <div id="carouselExampleIndicators" class="carousel slide pb-1" data-ride="carousel">
     <ol class="carousel-indicators">
         <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
@@ -165,6 +166,7 @@
     </a>
     </div>
 </div>
+{% comment %} tab navbar {% endcomment %}
 <ul class="nav nav-tabs" id="myTab" role="tablist">
     <li class="nav-item">
         <a class="nav-link active" id="exercise-tab" data-toggle="tab" href="#exercise" role="tab" aria-controls="exercise" aria-selected="true">Exercise</a>
@@ -176,10 +178,12 @@
         <a class="nav-link" id="exercise-tab" data-toggle="tab" href="#recipe" role="tab" aria-controls="exercise" aria-selected="true">Make at home</a>
     </li>
 </ul>
+{% comment %} exercise section  {% endcomment %}
 <div class="tab-content pt-1 pl-2" id="myTabContent">
     <div class="tab-pane fade show active" id="exercise" role="tabpanel" aria-labelledby="exercise-tab">
         <div class="row mr-0">
             <div class="col-lg-5 col-md-6 border-right border-top pb-4" id="FixedDiv">
+            {% comment %} mecchanical implemenation, with a different DB structure could have been done with a loop {% endcomment %}
             <h3 class="text-center">Daily Exercise</h3>
                 <table class="table table-striped table-dark">
                 <thead>
@@ -218,6 +222,7 @@
                 </tbody>
                 </table>
                 <div class="row mr-0 pl-3">
+                {% comment %} modal to update table {% endcomment %}
                     <!-- Button trigger modal -->
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">
                     Set workout level
@@ -227,6 +232,7 @@
                     
                     <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
                     <form method= 'post' action= {% url 'manCal:exercise_add' %} >
+                    {% comment %} table update form {% endcomment %}
                     {% csrf_token %}
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
@@ -286,6 +292,7 @@
                 </div>
                 
             </div>
+            {% comment %} guides for exercise with description and video link {% endcomment %}
             <div class="col-lg-7 col-md-6 border-left border-top">
                 <h3 class="text-center">Guides</h3>
                 <div class= "guide">
@@ -332,13 +339,13 @@
             
         </div>
     </div>
+    {% comment %} search local restaurant implemenation with google API {% endcomment %}
     <div class="tab-pane fade" id="food" role="tabpanel" aria-labelledby="food-tab">
         <input id="input" class="pac-target-input form-control mt-4 mb-3" placeholder="Enter address" />
         <div id="map"></div>
-
-        <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
         
     </div>
+    {% comment %} recepie section {% endcomment %}
     <div class="tab-pane fade" id="recipe" role="tabpanel" aria-labelledby="food-tab">
         <div class="search pt-3">
             <h3 class="text-center"> Search your recipe here </h3>
@@ -365,6 +372,7 @@
 <script
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDio4Zj99JOhP8SBQBM3CydIsc91ld-Jbs&callback=initMap&libraries=localContext,places&v=beta" async></script>
 <script>
+{% comment %} search local resturant implemenation with google API {% endcomment %}
     let map;
     let localContextMapView;
     const styles = [
@@ -595,10 +603,12 @@
     }
 </script>
 <script>
+//prevent form submittion clicking neter
 $(document).on("keydown", "form", function(event) { 
     return event.key != "Enter";
 });
 
+//setting to send request to recepie api
 let searchButton = document.querySelector("#search")
 
 searchButton.addEventListener("click", ()=>{
@@ -620,7 +630,7 @@ async function sendApiRequest(food){
 
 function useApiData(data){
     var i;
-    console.log("button")
+//creating card for  each recepie found
     if (data.hits.length > 0){
         for(i = 0; i< data.hits.length; i++ ){
         $(".food-cont").append(

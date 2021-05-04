@@ -3,6 +3,7 @@ from .models import CustomUser, Event, EventMember, Locations
 from django.contrib.auth.forms import UserCreationForm
 from django.forms import ModelForm, DateInput
 
+""" definition of all the Django froms used in the application"""
 class signUpForm(UserCreationForm):
   # Change from textfield into datepicker 
   class Meta:

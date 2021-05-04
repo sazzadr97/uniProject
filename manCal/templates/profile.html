@@ -3,10 +3,12 @@
 {% block content %}
 
 <div class="d-flex justify-content-center p-4 bd-highlight ">
+{% comment %} dispay user infromation and allow editing {% endcomment %}
     
     <form method= 'POST' action= {% url 'manCal:profile' %} >
     <h1>Profile</h1>
     <h3>Username: {{user.username}}</h3>
+    {% comment %} form generated with deafult value = to the data stored in DB {% endcomment %}
     {% csrf_token %}
         <div class="form-group ">
             <label for="exampleInputEmail1">First Name</label>

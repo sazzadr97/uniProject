@@ -4,9 +4,12 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 from . import views
+""" all urls format for the manCal app """
 
 app_name = 'manCal'
+""" the part in <> will have to be replaced by a value that is dinamicly provided """
 urlpatterns = [
+    
     path('index/', views.indexView, name="index"),
     path('calendar/', views.CalendarView.as_view(), name='calendar'),
     path('event/new/', views.create_event, name='event_new'),
@@ -32,3 +35,4 @@ urlpatterns = [
     
     
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+""" adding static file path """

@@ -1,3 +1,4 @@
+/* File collects only some CSS attribute that are applied to all pages, code for specific page were provided in the specific html page */
 ul, li{
   list-style-type: none;
 }

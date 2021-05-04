@@ -2,6 +2,7 @@
 
 {%block mycss%}
 <style>
+{% comment %} styleing for the calendar {% endcomment %}
     .list-group-item{
         border-bottom-right-radius: 0px;
         border-bottom-left-radius: 0px;
@@ -115,13 +116,16 @@
     <div class="conteiner_cal mt-2">
         <div class="notes-conteiner float-right col-lg-3 col-md-12 ">
             <h1> Notes </h1>
+            {% comment %} Creation of a note section {% endcomment %}
             <form class="form-inline" id="createNoteForm" method="POST" data-url= {% url 'manCal:add_note' %}>
+            {% comment %} note form with only one input {% endcomment %}
                 {% csrf_token %}
                     <input type="text" class="form-control mb-2 mr-sm-2 col-10 col-lg-8" id="note" placeholder="Write your note here" name = "note" required>
 
                 <button type="button" id="createNoteButton" class="btn btn-primary mb-2">Add...</button>
             </form>
             <div id="noteList">
+            {% comment %} for loop to display all notes created by the user {% endcomment %}
             {% for note in notes %}
                 <div class= "card mb-1" id="noteCard" data-id="{{note.id}}" style="{% if note.complited%} text-decoration: line-through {%endif%}">
                     <div class="card-body">
@@ -135,12 +139,14 @@
             </div>
         </div>
         <div class="calendar-content float-left col-md-12 col-lg-9 border-right">
+        {% comment %} calendar navigation {% endcomment %}
             <div class="clearfix">
                 <a class="btn btn-info right mr-2" href="{% url 'manCal:calendar' %}?{{ next_month }} "> Next Month >> </a>
                 <a class="btn btn-info text-center mr-2" href="{% url 'manCal:event_new' %}"> Add events </a>
                 <a class="btn btn-info left mr-2" href="{% url 'manCal:calendar' %}?{{ prev_month }}"> << Previous Month </a>
             </div>
             <div style="color: blueviolet;">
+            {% comment %} rendering calendar {% endcomment %}
                 {{ calendar }}
             </div>
         </div>
@@ -149,15 +155,22 @@
 {% endblock %}
 {% block javascript%}
 <script>
+$(document).on("keydown", "form", function(event) { 
+    return event.key != "Enter";
+});
+//fucntion to be executed at the laoding of the file
 $(document).ready(function(){
+    //button listener and ajax reqeust to create note
     $("#createNoteButton").click(function() {
-        
+        //serializeing form data for ajax request
         var serializedData = $("#createNoteForm").serialize();
         console.log(serializedData);
+        //sending ajax request
         $.ajax({
             url: $("#createNoteForm").data('url'),
             data: serializedData,
             type: 'post',
+            //action on successful request
             success: function(response) {
                 $("#noteList").append('<div class= "card mb-1" id="noteCard" data-id="'+ response.note.id +'"><div class="card-body">' +response.note.note+ '<button type="button" class="close float-right" data-id="'+ response.note.id +'"><span aria-hidden="true">&times;</span></button></div></div>')
 
@@ -165,8 +178,9 @@ $(document).ready(function(){
         })
         $("#createNoteForm")[0].reset();
     });
-
+    //same as creating anote but to update status
     $("#noteList").on('click', '.card', function() {
+        //get nore id to pass to backend
         var dataId = $(this).data('id');
         console.log(dataId);
         $.ajax({
@@ -190,8 +204,10 @@ $(document).ready(function(){
                 
             }
         })
+//delete ajax request
 
     }).on('click', 'button.close', function (event) {
+        //preventing clikc on close button to propagate to card as well
         event.stopPropagation();
         console.log("delete");
         var dataId = $(this).data('id');

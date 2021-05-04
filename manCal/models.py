@@ -3,12 +3,14 @@ from django.urls import reverse
 from django.contrib.auth.models import AbstractUser
 from django.conf import settings
 
-# Create your models here.
+"""  model used in the application """
+"""  creation of user model adding the email field """
 class CustomUser(AbstractUser):
     email = models.EmailField()
 
 
 class Event(models.Model):
+    """ connecting the user and event model with user foreign key """
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
     description = models.TextField()
@@ -21,9 +23,11 @@ class Event(models.Model):
     def __str__(self):
         return self.title
     
+    """ absolute URL to be used in te creation of the calendar """
     def get_absolute_url(self):
         return reverse('manCal:event-detail', args=(self.id,))
 
+    """ generating html url to be added to the event in the calendar """
     @property
     def get_html_url(self):
         url = reverse('manCal:event-detail', args=(self.id,))
@@ -51,6 +55,8 @@ class Notes(models.Model):
 
     def __str__(self):
         return str(self.note)
+    
+    """ defining elements order """
     class Meta:
         ordering = ['complited', 'id']
 

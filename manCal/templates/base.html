@@ -9,6 +9,7 @@
         <!-- Bootstrap CSS -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css">
+        {% comment %} static stylesheet file {% endcomment %}
         <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
         <style>
             body {
@@ -22,12 +23,14 @@
         {% block mycss %} {% endblock mycss %}
     </head>
     <body>   
+    {% comment %} navbar {% endcomment %}
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <a class="navbar-brand" href="{% url 'home' %}">SmartManage</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
+        {% comment %} displaying different link if the user is logged and when is no {% endcomment %}
             {% if user.is_authenticated %}
             <ul class="navbar-nav ">
                 <li class="nav-item ">
@@ -76,6 +79,7 @@
         
         
         <script>
+        //automatic CSRF token in ajax requests
             function getCookie(name) {
                 var cookieValue = null;
                 if (document.cookie && document.cookie !== '') {

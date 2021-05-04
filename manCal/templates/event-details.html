@@ -14,12 +14,13 @@ Event Details
 
 {% block content %}
     <div class="container">
+    {% comment %} navigation {% endcomment %}
         <div class="clearfix">
             <a class="btn btn-primary left" href="{% url 'manCal:calendar' %}"> Calendar </a>
             <a class="btn btn-info right m-2" href="{% url 'manCal:event_delete' event.pk %}"> Delete Event </a>
             <a class="btn btn-info right m-2" href="{% url 'manCal:event_edit' event.pk %}"> Edit Event </a>
         </div>
-        
+        {% comment %} event information {% endcomment %}
         <div class="clearfix event_content" data-id="{{event.id}}" >
             <h3>Event Name: {{ event.title }}</h3>
             <p>From <span style="color: gray;">{{ event.start_time }}</span> To <span style="color: gray;">{{ event.end_time }}</span></p>
@@ -62,6 +63,7 @@ Event Details
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                         <form method= 'post' action= {% url 'manCal:add_files' %} enctype= "multipart/form-data" >
+                        {% comment %} for to select file to upload {% endcomment %}
                             {% csrf_token %}
                             <div class="modal-header">
                                 <h5 class="modal-title" id="exampleModalLabel">Selects documents</h5>
@@ -81,7 +83,7 @@ Event Details
                         </form>
                     </div>
                     </div>
-
+                    
                     <table class="table table-bordered">
                     <thead>                  
                         <tr>
@@ -93,6 +95,7 @@ Event Details
                     </thead>
                     <tbody>
                         <div id="fileList">
+                        {% comment %} list of file in the event {% endcomment %}
                         {% for file in eventfiles %}
                         <tr role="row" id="fileRow" data-id={{file.id}}>
                             <td calss="filename">{{ file.files.name }}</td>
@@ -113,6 +116,7 @@ Event Details
 
                     
             </div>
+            {% comment %} event menber section {% endcomment %}
             <div class="tab-pane fade" id="members" role="tabpanel" aria-labelledby="members-tab">
                 <div class="clearfix">
                     <h4 class="left" > Members of this Event</h4>
@@ -131,6 +135,7 @@ Event Details
                     </thead>
                     <tbody>
                         <div id="memberList">
+                        {% comment %} loop for each member added to event {% endcomment %}
                         {% for member in eventmember %}
                         <tr role="row" id="memberRow" data-id={{member.id}}>
                             <td>{{ forloop.counter }}</td>
@@ -153,13 +158,17 @@ Event Details
 
 {% block javascript%}
     <script>
+    //creation of google maps
         let map;
         let marker;
+        //initialization
         function initMap() {
             map = new google.maps.Map(document.getElementById("map"), {
+                {% comment %} cord of the event location {% endcomment %}
                 center: { lat: {{lat}}, lng: {{lon}}  },
                 zoom: 18,
             });
+            {% comment %} cration of marker in the exact location {% endcomment %}
             marker = new google.maps.Marker({
                 position: { lat: {{lat}}, lng: {{lon}}  },
                 map: map
@@ -167,6 +176,7 @@ Event Details
         }
     </script>
     <script>
+    //Event listener with ajax request
         $(document).ready(function() {
             $(".delete-file").click( function() {
                 var dataId = $(this).data('id');
@@ -186,7 +196,7 @@ Event Details
                 })
 
             });
-
+        //Event listener with ajax request
             $(".delete-member").click( function () {
                 var dataId = $(this).data('id');
                 console.log(dataId);

@@ -7,7 +7,7 @@ from myProject.helper import get_current_user
 import datetime
 from django.utils.timezone import make_aware
 
-
+""" creation of calendar that extend HTML calendar """
 class Calendar(HTMLCalendar):
 	def __init__(self, year=None, month=None, user=None):
 		self.year = year
@@ -17,6 +17,7 @@ class Calendar(HTMLCalendar):
 
 	# formats a day as a td
 	# filter events by day
+	""" creating days and inserting event in the day  """
 	def formatday(self, day, events, year , month, user):
 		events_per_day = events.filter(start_time__day=day)
 		eventsAll = Event.objects.filter(user=user)
@@ -24,6 +25,7 @@ class Calendar(HTMLCalendar):
 		
 		
 		if day != 0:
+			""" recunstructing full date time of the creting day to then filter events """
 			dt_start = datetime.datetime(year, month, day)
 			tm_start = datetime.time(23, 59)
 			combined_start = dt_start.combine(dt_start, tm_start)
@@ -32,12 +34,14 @@ class Calendar(HTMLCalendar):
 			combined_end = dt_end.combine(dt_end, tm_end)
 			
 			for event in eventsAll:
+				""" check which events are still ongoing on the day """
 				if event.start_time <= combined_start and event.end_time >= combined_end:
 					d += f'<li> {event.get_html_url} </li>'	
 			return f"<td><span class='date'>{day}</span><ul> {d} </ul></td>"
 		return '<td></td>'
 
 	# formats a week as a tr 
+	""" creating week rows """
 	def formatweek(self, theweek, events, year, month, user):
 		week = ''
 		for d, weekday in theweek:
@@ -46,8 +50,11 @@ class Calendar(HTMLCalendar):
 
 	# formats a month as a table
 	# filter events by year and month
+	""" first function that created the calendar """
 	def formatmonth(self, withyear=True,):
+
 		user = self.user
+		""" events filtered to show only those that are created by the logged user """
 		events = Event.objects.filter(start_time__year=self.year, start_time__month=self.month).filter(user=user)
 		
 

@@ -2,6 +2,7 @@
 {%load static%}
 {% block mycss %}
 <style>
+{% comment %} card rendering and background {% endcomment %}
     body { 
     background: url('{% static "media/weather.jpg" %}') no-repeat center center fixed; 
     -webkit-background-size: cover;
@@ -113,7 +114,7 @@
     width: 2rem
     }
 
-    /* button */
+    {% comment %} button {% endcomment %}
 
     .search_bar{
     background-color: black;
@@ -187,6 +188,7 @@
 {% block content %}
 
 {% if messages %}
+{% comment %} display any meggege sent from the backend {% endcomment %}
     {% for message in messages %}
         <div class="alert alert-{{message.tags}} alert-dismissible fade show">
             {{message}}
@@ -200,6 +202,7 @@
         <div class="serch_row h-100 d-flex justify-content-center align-items-center mt-1 mb-1 ">
             <div class="col-md-8">
                 <form method= 'post' id="createWeatherForm" data-url= {% url 'manCal:weather' %} class="flex-nowrap col ml-auto footer-subscribe p-0 "> 
+                {% comment %} weather location search bar {% endcomment %}
                 {% csrf_token %}
                     {{form.location}}
                     <button type="button" id="createWeatherButton" class=" btn btn-theme bg-orange">Add
@@ -210,6 +213,7 @@
         </div>
     </div>
     <div class="row mr-0 " id="weatherList">
+    {% comment %} loop to create card for each city saved in the DB {% endcomment %}
     {% for city_weather in weather_data %}
         <div class="col-md-4" id="weatherCard" data-id="{{city_weather.location_id}}">
         <div class="card"  > <span class="icon"><img src="http://openweathermap.org/img/w/{{ city_weather.icon }}.png"></span>
@@ -244,9 +248,11 @@
 {% block javascript%}
 <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places&key=AIzaSyDio4Zj99JOhP8SBQBM3CydIsc91ld-Jbs"></script>
 <script>
+
     var searchInput = 'search_input';
 
     $(document).ready(function () {
+        {% comment %} google autocomplite {% endcomment %}
         var autocomplete;
         autocomplete = new google.maps.places.Autocomplete((document.getElementById('search_input')), {
             types: ['geocode'],
@@ -255,7 +261,7 @@
         google.maps.event.addListener(autocomplete, 'place_changed', function () {
             var near_place = autocomplete.getPlace();
         });
-
+        {% comment %} listener and ajax to delete saved location {% endcomment %}
         $("#weatherList").on('click', '.icon_del', function() {
             var dataId = $(this).data('id');
             $.ajax({
@@ -271,6 +277,7 @@
 
             })
         });
+        {% comment %} listener on serch bar and cration of card for new location added {% endcomment %}
         $("#createWeatherButton").click(function () {
             var serializedData = $("#createWeatherForm").serialize();
             console.log(serializedData);

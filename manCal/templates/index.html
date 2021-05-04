@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block mycss %}
 <style>
+{% comment %} use of manual grid setting {% endcomment %}
     .row{
         margin-right: 0px;
         margin-left: 0px;
@@ -104,15 +105,15 @@
         </div>
     </main>
     <div id="content1" class="pt-2">
-    <h4>Memo</h3>
-    {%for note in notes%}
-    {{note.note}}<br>
-    {%endfor%}
+        <h4>Memo</h3>
+        {%for note in notes%}
+        {{note.note}}<br>
+        {%endfor%}
     </div>
     
     <div id="content2" class="pt-2" >
-    <h4>Suggestion</h4>
-    Coming soon
+        <h4>Suggestion</h4>
+        Coming soon
     </div>
 </div>
 
